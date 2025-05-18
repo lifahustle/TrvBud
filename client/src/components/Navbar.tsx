@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, Bell, User, Plane, MapPin, DollarSign, FileText } from "lucide-react";
+import { Menu, Bell, User, Plane, MapPin, DollarSign, FileText, MessageCircle } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -13,6 +13,7 @@ const Navbar = () => {
     { name: "Transport", path: "/transport" },
     { name: "Money Mgt", path: "/money-management" },
     { name: "Visas", path: "/visas" },
+    { name: "Convo", path: "/conversation" },
     { name: "My Trips", path: "/my-trips" },
   ];
 
