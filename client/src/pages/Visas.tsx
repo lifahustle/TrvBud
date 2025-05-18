@@ -25,46 +25,132 @@ type VisaRequirement = {
 const Visas = () => {
   const visaRequirements: VisaRequirement[] = [
     {
-      country: "Japan",
-      flagEmoji: "🇯🇵",
-      officialName: "Ministry of Foreign Affairs of Japan",
+      country: "Vietnam",
+      flagEmoji: "🇻🇳",
+      officialName: "Immigration Department of Vietnam",
       visaTypes: [
         {
-          type: "Tourist Visa",
-          duration: "Single entry: up to 90 days; Multiple entry: up to 90 days per visit",
-          processingTime: "5-7 working days",
-          cost: "$30-60 USD",
+          type: "Tourist eVisa",
+          duration: "Single entry: up to 30 days",
+          processingTime: "3-5 working days",
+          cost: "$25 USD",
           requirements: [
             "Valid passport with at least 6 months validity and blank visa pages",
-            "Completed visa application form",
-            "Recent passport-sized color photograph",
+            "Completed online visa application form",
+            "Recent passport-sized digital photograph (4x6 cm)",
+            "Digital copy of passport data page",
             "Flight itinerary (round trip)",
             "Hotel reservations",
-            "Proof of sufficient funds (bank statements)",
-            "Travel insurance (recommended)"
+            "Credit/debit card for payment"
           ]
         },
         {
-          type: "Business Visa",
-          duration: "Single entry: up to 90 days; Multiple entry: up to 90 days per visit",
-          processingTime: "5-7 working days",
-          cost: "$30-60 USD",
+          type: "Tourist Visa (Embassy/Consulate)",
+          duration: "Single entry: up to 30 days; Multiple entry: up to 90 days",
+          processingTime: "4-7 working days",
+          cost: "$25-65 USD (varies by type)",
           requirements: [
             "Valid passport with at least 6 months validity and blank visa pages",
             "Completed visa application form",
             "Recent passport-sized color photograph",
-            "Letter of invitation from Japanese company",
-            "Letter from employer stating purpose of trip",
-            "Company registration documents",
+            "Invitation letter from Vietnam-based sponsor (for business/longer stays)",
             "Flight itinerary (round trip)",
-            "Hotel reservations"
+            "Proof of sufficient funds",
+            "Travel insurance (recommended)"
           ]
         }
       ],
-      officialWebsite: "https://www.mofa.go.jp/j_info/visit/visa/index.html",
-      notes: "Japan offers visa exemptions for citizens of 68 countries for tourism and business stays of up to 90 days.",
+      officialWebsite: "https://evisa.xuatnhapcanh.gov.vn/",
+      notes: "Vietnam has recently expanded its e-visa system to citizens of all countries. The e-visa is valid for single-entry stays of up to 30 days.",
       eVisaAvailable: true,
-      visaFreeCountries: ["United States", "Canada", "Australia", "United Kingdom", "New Zealand", "Singapore", "South Korea", "European Union countries"]
+      visaFreeCountries: ["Thailand", "Malaysia", "Singapore", "Indonesia", "Philippines", "Laos", "Cambodia", "Myanmar", "Brunei", "South Korea", "Japan", "Russia", "Belarus", "Norway", "Denmark", "Sweden", "Finland"]
+    },
+    {
+      country: "Cambodia",
+      flagEmoji: "🇰🇭",
+      officialName: "Ministry of Foreign Affairs and International Cooperation, Cambodia",
+      visaTypes: [
+        {
+          type: "Tourist eVisa",
+          duration: "Single entry: up to 30 days",
+          processingTime: "3 working days",
+          cost: "$36 USD",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed online visa application form",
+            "Recent digital passport photo",
+            "Credit/debit card for payment"
+          ]
+        },
+        {
+          type: "Tourist Visa on Arrival",
+          duration: "Single entry: up to 30 days",
+          processingTime: "Same day at airport/border crossing",
+          cost: "$30 USD",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed visa application form (available at entry points)",
+            "Recent passport-sized color photograph",
+            "Cash payment in USD"
+          ]
+        },
+        {
+          type: "Business Visa (E-class)",
+          duration: "Initial 30 days, extendable for 1, 3, 6, or 12 months",
+          processingTime: "Same day at airport/border crossing",
+          cost: "$35 USD (initial 30 days)",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed visa application form",
+            "Recent passport-sized color photograph",
+            "Cash payment in USD"
+          ]
+        }
+      ],
+      officialWebsite: "https://www.evisa.gov.kh/",
+      notes: "Cambodia offers visa on arrival at major entry points, including international airports in Phnom Penh and Siem Reap, and major land border crossings.",
+      eVisaAvailable: true,
+      visaFreeCountries: ["Laos", "Malaysia", "Philippines", "Singapore", "Vietnam", "Thailand", "Indonesia", "Myanmar", "Brunei"]
+    },
+    {
+      country: "Malaysia",
+      flagEmoji: "🇲🇾",
+      officialName: "Immigration Department of Malaysia",
+      visaTypes: [
+        {
+          type: "eVISA",
+          duration: "Single entry: up to 30 days",
+          processingTime: "48-72 hours",
+          cost: "$20-35 USD (varies by nationality)",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed online visa application form",
+            "Recent passport-sized digital photograph",
+            "Confirmed flight tickets (return/onward)",
+            "Proof of accommodation",
+            "Credit/debit card for payment"
+          ]
+        },
+        {
+          type: "Multiple Entry Visa",
+          duration: "Multiple entries: up to 30 days per visit (valid for 3-12 months)",
+          processingTime: "5-7 working days",
+          cost: "$20-100 USD (varies by nationality)",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed visa application form",
+            "Recent passport-sized color photograph",
+            "Flight itinerary (return/onward)",
+            "Proof of accommodation",
+            "Proof of sufficient funds",
+            "Travel insurance (recommended)"
+          ]
+        }
+      ],
+      officialWebsite: "https://www.imi.gov.my/portal2017/index.php/en/",
+      notes: "Malaysia offers visa-free entry for citizens of many countries for stays ranging from 14 to 90 days, depending on nationality.",
+      eVisaAvailable: true,
+      visaFreeCountries: ["United States", "United Kingdom", "Canada", "Australia", "European Union countries", "South Korea", "Japan", "Singapore", "Thailand", "Brunei"]
     },
     {
       country: "South Korea",
@@ -496,8 +582,8 @@ const Visas = () => {
             </p>
             <div className="space-y-3">
               <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="https://www.mofa.go.jp/about/emb_cons/over/index.html" target="_blank" rel="noopener noreferrer">
-                  <span className="mr-2">🇯🇵</span> Japan Embassies & Consulates
+                <a href="https://www.vietnam-briefing.com/news/vietnam-visa-guide-requirements-application-exemptions.html/" target="_blank" rel="noopener noreferrer">
+                  <span className="mr-2">🇻🇳</span> Vietnam Embassies & Consulates
                 </a>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
