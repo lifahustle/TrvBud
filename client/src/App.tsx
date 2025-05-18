@@ -10,6 +10,7 @@ import Flights from "./pages/Flights";
 import Stays from "./pages/Stays";
 import Transport from "./pages/Transport";
 import MyTrips from "./pages/MyTrips";
+import MoneyManagement from "./pages/MoneyManagement";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/flights" component={Flights} />
       <Route path="/stays" component={Stays} />
       <Route path="/transport" component={Transport} />
+      <Route path="/money-management" component={MoneyManagement} />
       <Route path="/my-trips" component={MyTrips} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
