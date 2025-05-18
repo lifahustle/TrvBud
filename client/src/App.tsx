@@ -11,6 +11,7 @@ import Stays from "./pages/Stays";
 import Transport from "./pages/Transport";
 import MyTrips from "./pages/MyTrips";
 import MoneyManagement from "./pages/MoneyManagement";
+import Visas from "./pages/Visas";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/stays" component={Stays} />
       <Route path="/transport" component={Transport} />
       <Route path="/money-management" component={MoneyManagement} />
+      <Route path="/visas" component={Visas} />
       <Route path="/my-trips" component={MyTrips} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
