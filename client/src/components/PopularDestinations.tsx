@@ -10,37 +10,37 @@ const PopularDestinations = () => {
     queryKey: ['/api/destinations']
   });
 
-  // Top 10 East Asian destinations with 5-star ratings
+  // Top 10 Southeast Asian destinations with 5-star ratings
   const topEastAsianDestinations = [
     {
       id: 1,
-      name: "Tokyo",
-      country: "Japan",
+      name: "Siem Reap",
+      country: "Cambodia",
       rating: 4.9,
-      description: "Experience the perfect blend of traditional culture and futuristic technology",
-      discountAirline: "Japan Airlines - 25% OFF",
-      discountHotel: "Park Hyatt Tokyo - 30% OFF",
-      discountVehicle: "Toyota Premium Rental - 15% OFF"
+      description: "Explore the magnificent temples of Angkor Wat and experience authentic Khmer culture",
+      discountAirline: "Cambodia Angkor Air - 25% OFF",
+      discountHotel: "Raffles Grand Hotel d'Angkor - 30% OFF",
+      discountVehicle: "Cambodia Luxury Transport - 15% OFF"
     },
     {
       id: 2, 
-      name: "Seoul",
-      country: "South Korea",
+      name: "Kuala Lumpur",
+      country: "Malaysia",
       rating: 4.8,
-      description: "Vibrant city with dynamic street food, shopping, and cultural experiences",
-      discountAirline: "Korean Air - 20% OFF",
-      discountHotel: "JW Marriott Seoul - 25% OFF",
-      discountVehicle: "Hyundai Luxury Car Rental - 10% OFF"
+      description: "Vibrant city with stunning architecture, diverse cuisine, and luxury shopping",
+      discountAirline: "Malaysia Airlines - 20% OFF",
+      discountHotel: "Mandarin Oriental Kuala Lumpur - 25% OFF",
+      discountVehicle: "Malaysia Premium Car Rental - 10% OFF"
     },
     {
       id: 3,
-      name: "Kyoto",
-      country: "Japan",
+      name: "Singapore",
+      country: "Singapore",
       rating: 4.9,
-      description: "Immerse yourself in traditional Japanese culture and breathtaking temples",
-      discountAirline: "ANA - 15% OFF",
-      discountHotel: "The Ritz-Carlton Kyoto - 20% OFF",
-      discountVehicle: "Nissan Premium Car Service - 15% OFF"
+      description: "Immerse yourself in a multicultural city-state with futuristic attractions and pristine streets",
+      discountAirline: "Singapore Airlines - 15% OFF",
+      discountHotel: "Marina Bay Sands - 20% OFF",
+      discountVehicle: "Singapore Luxury Limousine - 15% OFF"
     }
   ];
 

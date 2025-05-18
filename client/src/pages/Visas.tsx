@@ -153,84 +153,83 @@ const Visas = () => {
       visaFreeCountries: ["United States", "United Kingdom", "Canada", "Australia", "European Union countries", "South Korea", "Japan", "Singapore", "Thailand", "Brunei"]
     },
     {
-      country: "South Korea",
-      flagEmoji: "🇰🇷",
-      officialName: "Ministry of Foreign Affairs, Republic of Korea",
+      country: "Thailand",
+      flagEmoji: "🇹🇭",
+      officialName: "Ministry of Foreign Affairs of the Kingdom of Thailand",
       visaTypes: [
         {
-          type: "Tourist Visa (C-3-9)",
-          duration: "Up to 90 days",
-          processingTime: "5-10 working days",
+          type: "Tourist Visa (TR)",
+          duration: "Single entry: up to 60 days (can be extended for 30 days); Multiple entry: up to 60 days per entry (valid for 6 months)",
+          processingTime: "2-5 working days",
           cost: "$40-60 USD",
           requirements: [
-            "Valid passport with at least 6 months validity",
+            "Valid passport with at least 6 months validity and blank visa pages",
             "Completed visa application form",
             "Recent passport-sized color photograph",
-            "Proof of sufficient funds",
             "Flight itinerary (round trip)",
-            "Hotel reservations",
-            "Travel insurance (recommended)"
+            "Proof of accommodation",
+            "Proof of sufficient funds (20,000 THB per person, 40,000 THB per family)",
+            "Travel insurance with COVID-19 coverage (minimum $10,000 USD)"
           ]
         },
         {
-          type: "K-ETA (Electronic Travel Authorization)",
-          duration: "Multiple entries for up to 90 days per stay (valid for 2 years)",
-          processingTime: "24-72 hours",
-          cost: "$10 USD",
+          type: "eVisa",
+          duration: "Single entry: up to 60 days",
+          processingTime: "3-5 working days",
+          cost: "$40 USD",
           requirements: [
             "Valid passport with at least 6 months validity",
-            "Valid email address",
-            "Credit/debit card for payment",
-            "Recent digital photograph"
+            "Completed online application form",
+            "Digital passport-sized photograph",
+            "Flight itinerary (round trip)",
+            "Proof of accommodation",
+            "Proof of sufficient funds",
+            "Travel insurance"
           ]
         }
       ],
-      officialWebsite: "https://www.visa.go.kr/main/openMain.do",
-      notes: "K-ETA is available for citizens of visa-free countries. Apply at least 72 hours before departure.",
+      officialWebsite: "https://www.thaiembassy.com/thailand-visa/",
+      notes: "Thailand offers visa exemptions for citizens of many countries for stays of 30-90 days. eVisa application is available for tourist and business visits.",
       eVisaAvailable: true,
-      visaFreeCountries: ["United States", "Canada", "Australia", "United Kingdom", "European Union countries", "New Zealand", "Singapore"]
+      visaFreeCountries: ["Brunei", "Cambodia (14 days)", "Indonesia", "Laos", "Malaysia", "Philippines", "Singapore", "Vietnam"]
     },
     {
-      country: "China",
-      flagEmoji: "🇨🇳",
-      officialName: "Ministry of Foreign Affairs of the People's Republic of China",
+      country: "Philippines",
+      flagEmoji: "🇵🇭",
+      officialName: "Bureau of Immigration, Republic of the Philippines",
       visaTypes: [
         {
-          type: "L Visa (Tourist)",
-          duration: "Single entry: 30-90 days; Double entry: 30-90 days per entry; Multiple entry: 30-90 days per entry, valid for 6 months, 1 year, or 10 years",
-          processingTime: "4-10 working days",
-          cost: "$30-140 USD (varies by nationality and number of entries)",
+          type: "Tourist Visa",
+          duration: "Up to 30 days (extendable up to 59 days)",
+          processingTime: "2-7 working days",
+          cost: "$40 USD",
           requirements: [
             "Valid passport with at least 6 months validity and blank visa pages",
             "Completed visa application form",
             "Recent passport-sized color photograph",
             "Flight itinerary (round trip)",
-            "Hotel reservations",
-            "Detailed travel itinerary",
+            "Proof of accommodation",
             "Proof of sufficient funds",
             "Travel insurance (recommended)"
           ]
         },
         {
-          type: "M Visa (Business)",
-          duration: "Single entry: 30-90 days; Double entry: 30-90 days per entry; Multiple entry: 30-90 days per entry, valid for 6 months, 1 year, or 10 years",
-          processingTime: "4-10 working days",
-          cost: "$30-140 USD (varies by nationality and number of entries)",
+          type: "eTravel (Electronic Travel System)",
+          duration: "Up to 30 days (visa-free for eligible countries)",
+          processingTime: "1-3 working days",
+          cost: "Free",
           requirements: [
-            "Valid passport with at least 6 months validity and blank visa pages",
-            "Completed visa application form",
-            "Recent passport-sized color photograph",
-            "Invitation letter from Chinese business/trade partner",
-            "Business license of the inviting company",
-            "Flight itinerary (round trip)",
-            "Hotel reservations"
+            "Valid passport with at least 6 months validity",
+            "Completed online pre-travel registration",
+            "Return ticket",
+            "Valid email address"
           ]
         }
       ],
-      officialWebsite: "https://english.www.gov.cn/services/visitchina",
-      notes: "China has resumed 15-day visa-free transit for certain nationalities at specific entry points. Check the latest policy before travel.",
+      officialWebsite: "https://immigration.gov.ph/",
+      notes: "The Philippines offers visa-free entry to citizens of many countries for stays of up to 30 days. The eTravel system requires pre-registration before arrival.",
       eVisaAvailable: true,
-      visaFreeCountries: ["Singapore", "Brunei", "Japan (for business and tourism up to 15 days)"]
+      visaFreeCountries: ["Brunei", "Cambodia", "Indonesia", "Laos", "Malaysia", "Singapore", "Thailand", "Vietnam"]
     },
     {
       country: "Thailand",
@@ -315,15 +314,15 @@ const Visas = () => {
       visaFreeCountries: ["United States", "Canada", "Australia", "United Kingdom", "European Union countries", "Japan", "South Korea", "New Zealand", "Malaysia"]
     },
     {
-      country: "Hong Kong",
-      flagEmoji: "🇭🇰",
-      officialName: "Immigration Department, The Government of Hong Kong Special Administrative Region",
+      country: "Brunei",
+      flagEmoji: "🇧🇳",
+      officialName: "Department of Immigration and National Registration, Brunei Darussalam",
       visaTypes: [
         {
-          type: "Visitor Visa",
-          duration: "14-90 days (varies by nationality)",
-          processingTime: "4-6 weeks",
-          cost: "HK$230 ($30 USD)",
+          type: "Tourist Visa",
+          duration: "Up to 90 days (single entry)",
+          processingTime: "3-5 working days",
+          cost: "B$20 ($15 USD)",
           requirements: [
             "Valid passport with at least 6 months validity and blank visa pages",
             "Completed visa application form",
@@ -333,24 +332,76 @@ const Visas = () => {
             "Proof of sufficient funds",
             "Travel insurance (recommended)"
           ]
+        },
+        {
+          type: "Business Visa",
+          duration: "Up to 90 days (multiple entry available)",
+          processingTime: "5-7 working days",
+          cost: "B$30 ($22 USD)",
+          requirements: [
+            "Valid passport with at least 6 months validity and blank visa pages",
+            "Completed visa application form",
+            "Recent passport-sized color photograph",
+            "Letter of invitation from Bruneian company",
+            "Letter from employer",
+            "Flight itinerary (round trip)",
+            "Hotel reservation"
+          ]
         }
       ],
-      officialWebsite: "https://www.immd.gov.hk/eng/services/visas/visit-transit/visit-visa-entry-permit.html",
-      notes: "Hong Kong offers visa-free entry for citizens of about 170 countries and territories for stays ranging from 7 to 180 days.",
+      officialWebsite: "https://www.immigration.gov.bn",
+      notes: "Brunei offers visa-free or visa-on-arrival access to citizens of many countries for stays of up to 90 days.",
+      eVisaAvailable: false,
+      visaFreeCountries: ["Malaysia", "Singapore", "Philippines", "Thailand", "Vietnam", "Indonesia", "Cambodia", "Laos", "Myanmar"]
+    },
+    {
+      country: "Myanmar",
+      flagEmoji: "🇲🇲",
+      officialName: "Ministry of Immigration and Population, Myanmar",
+      visaTypes: [
+        {
+          type: "Tourist eVisa",
+          duration: "28 days (single entry)",
+          processingTime: "3 working days",
+          cost: "$50 USD",
+          requirements: [
+            "Valid passport with at least 6 months validity",
+            "Digital passport-sized color photograph",
+            "Travel itinerary",
+            "Hotel booking confirmation",
+            "Credit/debit card for payment"
+          ]
+        },
+        {
+          type: "Business eVisa",
+          duration: "70 days (single entry)",
+          processingTime: "3 working days",
+          cost: "$70 USD",
+          requirements: [
+            "Valid passport with at least 6 months validity",
+            "Digital passport-sized color photograph",
+            "Invitation letter from sponsoring company in Myanmar",
+            "Company registration documents",
+            "Credit/debit card for payment"
+          ]
+        }
+      ],
+      officialWebsite: "https://evisa.moip.gov.mm/",
+      notes: "Myanmar has resumed eVisa services after the COVID-19 pandemic. Visitors must enter through specific international entry points.",
       eVisaAvailable: true,
-      visaFreeCountries: ["United States", "Canada", "Australia", "United Kingdom", "European Union countries", "Japan", "South Korea", "Singapore", "Malaysia", "New Zealand"]
+      visaFreeCountries: ["Brunei", "Cambodia", "Indonesia", "Laos", "Philippines", "Thailand", "Vietnam"]
     }
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Visa Requirements for East Asia - Trv Bud</title>
-        <meta name="description" content="Comprehensive information about visa requirements for traveling to East Asian countries including Japan, China, South Korea, Thailand, Singapore, and more." />
+        <title>Visa Requirements for Southeast Asia - Trv Bud</title>
+        <meta name="description" content="Comprehensive information about visa requirements for traveling to Southeast Asian countries including Cambodia, Vietnam, Thailand, Malaysia, Singapore, and more." />
       </Helmet>
       
-      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">East Asia Visa Requirements</h1>
-      <p className="text-neutral-500 mb-8">Essential visa information for travelers to East Asian destinations</p>
+      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Southeast Asia Visa Requirements</h1>
+      <p className="text-neutral-500 mb-8">Essential visa information for travelers to Southeast Asian destinations</p>
       
       <Card className="mb-8">
         <CardHeader>
@@ -587,18 +638,18 @@ const Visas = () => {
                 </a>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="https://www.china-embassy.gov.cn/eng/" target="_blank" rel="noopener noreferrer">
-                  <span className="mr-2">🇨🇳</span> China Embassies & Consulates
-                </a>
-              </Button>
-              <Button variant="outline" className="w-full justify-start" asChild>
-                <a href="https://overseas.mofa.go.kr/en/main/index.do" target="_blank" rel="noopener noreferrer">
-                  <span className="mr-2">🇰🇷</span> South Korea Embassies & Consulates
+                <a href="https://laoembassy.com/" target="_blank" rel="noopener noreferrer">
+                  <span className="mr-2">🇱🇦</span> Laos Embassies & Consulates
                 </a>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
                 <a href="https://www.thaiembassy.com/embassy/thai-embassy-worldwide" target="_blank" rel="noopener noreferrer">
                   <span className="mr-2">🇹🇭</span> Thailand Embassies & Consulates
+                </a>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <a href="https://www.myanmarembassy.com/embassy-consulates/" target="_blank" rel="noopener noreferrer">
+                  <span className="mr-2">🇲🇲</span> Myanmar Embassies & Consulates
                 </a>
               </Button>
             </div>
