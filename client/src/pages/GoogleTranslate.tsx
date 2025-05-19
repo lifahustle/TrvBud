@@ -969,28 +969,28 @@ const GoogleTranslate = () => {
                               </div>
                               <p className="text-neutral-500 mb-4">Listening...</p>
                               
-                              {/* For demo: Buttons to simulate speaking different phrases */}
+                              {/* Test buttons */}
                               <div className="flex flex-col space-y-2">
                                 <Button 
                                   onClick={() => simulateVoiceRecognition("Where is the nearest restaurant?")}
                                   variant="outline"
                                   size="sm"
                                 >
-                                  Speak: "Where is the nearest restaurant?"
+                                  Test: Restaurant
                                 </Button>
                                 <Button 
                                   onClick={() => simulateVoiceRecognition("How much does this cost?")}
                                   variant="outline"
                                   size="sm"
                                 >
-                                  Speak: "How much does this cost?"
+                                  Test: Price
                                 </Button>
                               </div>
                             </>
                           ) : (
                             <>
                               <div className="w-full">
-                                <p className="text-neutral-400 text-sm mb-2">Detected speech:</p>
+                                <p className="text-neutral-400 text-sm mb-2">Detected:</p>
                                 <p className="font-medium">{voiceText}</p>
                               </div>
                             </>
@@ -999,7 +999,7 @@ const GoogleTranslate = () => {
                       ) : (
                         <div className="flex flex-col items-center justify-center h-full text-neutral-400">
                           <Mic className="h-8 w-8 mb-2 opacity-30" />
-                          <p>Tap "Start Speaking" and say something</p>
+                          <p>Click the microphone button to start</p>
                         </div>
                       )}
                     </div>
