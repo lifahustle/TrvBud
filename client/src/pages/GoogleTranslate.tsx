@@ -625,7 +625,7 @@ const GoogleTranslate = () => {
     navigator.clipboard.writeText(text);
   };
   
-  // Voice recognition functionality
+  // Voice recognition functionality - improved to match real Google Translate
   const toggleListening = () => {
     if (isListening) {
       stopListening();
@@ -639,30 +639,63 @@ const GoogleTranslate = () => {
     setVoiceDetected(false);
     setVoiceText("");
     
+    // Clear any previous translation when starting a new recording
+    setTranslatedText("");
+    
     // Simulate voice detection after a short delay
     setTimeout(() => {
       setVoiceDetected(true);
-      // Simulate transcribing
-      let transcriptionProgress = "";
-      const phrases = [
-        "Hello",
-        "Hello, how are you?",
-        "Hello, how are you? Can you help me?",
-        "Hello, how are you? Can you help me find the nearest restaurant?"
-      ];
       
-      let phraseIndex = 0;
-      const transcriptionInterval = setInterval(() => {
-        if (phraseIndex < phrases.length) {
-          transcriptionProgress = phrases[phraseIndex];
-          setVoiceText(transcriptionProgress);
-          phraseIndex++;
-        } else {
-          clearInterval(transcriptionInterval);
-          stopListening();
-          simulateTranslation(transcriptionProgress, sourceLanguage, targetLanguage);
-        }
-      }, 800);
+      // Get a realistic voice sample based on the selected language
+      let voiceSample = "";
+      
+      if (sourceLanguage === "th") {
+        // Thai voice samples
+        const thaiSamples = [
+          "สวัสดี",
+          "ขอถามหน่อย ห้องน้ำอยู่ที่ไหน",
+          "อาหารนี้อร่อยมาก",
+          "ฉันต้องการเรียกแท็กซี่"
+        ];
+        voiceSample = thaiSamples[Math.floor(Math.random() * thaiSamples.length)];
+      } else if (sourceLanguage === "vi") {
+        // Vietnamese voice samples
+        const vietnameseSamples = [
+          "Xin chào",
+          "Nhà vệ sinh ở đâu?",
+          "Món ăn này rất ngon",
+          "Tôi cần gọi taxi"
+        ];
+        voiceSample = vietnameseSamples[Math.floor(Math.random() * vietnameseSamples.length)];
+      } else if (sourceLanguage === "km") {
+        // Khmer voice samples
+        const khmerSamples = [
+          "ជំរាបសួរ",
+          "តើបន្ទប់ទឹកនៅឯណា?",
+          "អាហារនេះឆ្ងាញ់ណាស់",
+          "ខ្ញុំត្រូវការហៅតាក់ស៊ី"
+        ];
+        voiceSample = khmerSamples[Math.floor(Math.random() * khmerSamples.length)];
+      } else {
+        // English/default voice samples - clean, direct phrases without suggested extensions
+        const englishSamples = [
+          "Hello",
+          "Where is the bathroom?",
+          "This food is delicious",
+          "I need to call a taxi"
+        ];
+        voiceSample = englishSamples[Math.floor(Math.random() * englishSamples.length)];
+      }
+      
+      // Set the detected voice text immediately without incremental updates
+      setVoiceText(voiceSample);
+      
+      // Automatically stop listening after voice is detected, like real Google Translate
+      setTimeout(() => {
+        stopListening();
+        // Translate the detected text
+        simulateTranslation(voiceSample, sourceLanguage, targetLanguage);
+      }, 1500);
     }, 1000);
   };
   
