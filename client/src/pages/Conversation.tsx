@@ -133,15 +133,20 @@ const Conversation = () => {
     ]
   };
 
-  // Common responses in Southeast Asian languages
-  const commonResponses = {
+  // Common responses in Southeast Asian languages - expanded dictionary
+  const commonResponses: Record<string, Record<string, string>> = {
     th: {
       "Hello": "สวัสดี (Sawasdee)",
       "Thank you": "ขอบคุณ (Khob khun)",
       "Yes": "ใช่ (Chai)",
       "No": "ไม่ (Mai)",
       "Excuse me": "ขอโทษ (Kor thot)",
-      "Where is the bathroom?": "ห้องน้ำอยู่ที่ไหน (Hong nam yu tee nai)"
+      "Where is the bathroom?": "ห้องน้ำอยู่ที่ไหน (Hong nam yu tee nai)",
+      "How much does this cost?": "นี่ราคาเท่าไร (Nee raka tao rai)",
+      "I need a taxi": "ฉันต้องการแท็กซี่ (Chan tong gaan taxi)",
+      "The bill, please": "เช็คบิลครับ/คะ (Check bin krub/ka)",
+      "I'm vegetarian": "ฉันทานเจ (Chan tan jay)",
+      "Water, please": "ขอน้ำหน่อย (Kor nam noi)"
     },
     vi: {
       "Hello": "Xin chào",
@@ -149,7 +154,12 @@ const Conversation = () => {
       "Yes": "Vâng/Có",
       "No": "Không",
       "Excuse me": "Xin lỗi",
-      "Where is the bathroom?": "Nhà vệ sinh ở đâu?"
+      "Where is the bathroom?": "Nhà vệ sinh ở đâu?",
+      "How much does this cost?": "Cái này giá bao nhiêu?",
+      "I need a taxi": "Tôi cần một taxi",
+      "The bill, please": "Hóa đơn, làm ơn",
+      "I'm vegetarian": "Tôi ăn chay",
+      "Water, please": "Cho tôi xin nước"
     },
     km: {
       "Hello": "ជំរាបសួរ (Chom reap sour)",
@@ -157,32 +167,138 @@ const Conversation = () => {
       "Yes": "បាទ/ចាស (Baat/chaa)",
       "No": "ទេ (Te)",
       "Excuse me": "សូមទោស (Som toh)",
-      "Where is the bathroom?": "តើបន្ទប់ទឹកនៅឯណា? (Tae bantup teuk nov ae na?)"
+      "Where is the bathroom?": "តើបន្ទប់ទឹកនៅឯណា? (Tae bantup teuk nov ae na?)",
+      "How much does this cost?": "តើវាថ្លៃប៉ុន្មាន? (Tae via tlai ponman?)",
+      "I need a taxi": "ខ្ញុំត្រូវការតាក់ស៊ី (Knom trovkar taxi)",
+      "The bill, please": "សូមគិតលុយ (Som kit luy)",
+      "I'm vegetarian": "ខ្ញុំញ៉ាំតែបន្លែ (Knom nyam tae bonle)",
+      "Water, please": "សូមទឹកមួយ (Som teuk muoy)"
+    },
+    ms: {
+      "Hello": "Selamat sejahtera",
+      "Thank you": "Terima kasih",
+      "Yes": "Ya",
+      "No": "Tidak",
+      "Excuse me": "Maafkan saya",
+      "Where is the bathroom?": "Di mana tandas?",
+      "How much does this cost?": "Berapa harganya?",
+      "I need a taxi": "Saya perlukan teksi",
+      "The bill, please": "Bil, sila",
+      "I'm vegetarian": "Saya vegetarian",
+      "Water, please": "Air, sila"
+    },
+    fil: {
+      "Hello": "Kamusta",
+      "Thank you": "Salamat",
+      "Yes": "Oo",
+      "No": "Hindi",
+      "Excuse me": "Patawad po",
+      "Where is the bathroom?": "Nasaan ang banyo?",
+      "How much does this cost?": "Magkano ito?",
+      "I need a taxi": "Kailangan ko ng taxi",
+      "The bill, please": "Ang bill, pakisuyo",
+      "I'm vegetarian": "Vegetarian ako",
+      "Water, please": "Tubig, pakisuyo"
+    },
+    lo: {
+      "Hello": "ສະບາຍດີ (Sabaidee)",
+      "Thank you": "ຂອບໃຈ (Khop chai)",
+      "Yes": "ແມ່ນແລ້ວ (Maen laew)",
+      "No": "ບໍ່ (Bo)",
+      "Excuse me": "ຂໍໂທດ (Kho thot)",
+      "Where is the bathroom?": "ຫ້ອງນ້ຳຢູ່ໃສ (Hong nam yu sai)",
+      "How much does this cost?": "ລາຄາເທົ່າໃດ (Laka thao dai)",
+      "I need a taxi": "ຂ້ອຍຕ້ອງການລົດແທັກຊີ (Khoy tongkan lot taxi)",
+      "The bill, please": "ເອົາບິນແດ່ (Ao bin dae)",
+      "I'm vegetarian": "ຂ້ອຍກິນຜັກ (Khoy kin phak)",
+      "Water, please": "ຂໍນ້ຳແດ່ (Kho nam dae)"
+    },
+    my: {
+      "Hello": "မင်္ဂလာပါ (Mingalar ba)",
+      "Thank you": "ကျေးဇူးတင်ပါတယ် (Kyeizu tin ba de)",
+      "Yes": "ဟုတ်ကဲ့ (Hote kae)",
+      "No": "မဟုတ်ဘူး (Ma hote bu)",
+      "Excuse me": "ခွင့်လွှတ်ပါ (Khwin lwut ba)",
+      "Where is the bathroom?": "အိမ်သာဘယ်မှာလဲ (Ein tha beh hma le)",
+      "How much does this cost?": "ဒါဘယ်လောက်ကျလဲ (Da beh lout kya le)",
+      "I need a taxi": "ကျွန်တော်/ကျွန်မ တက္ကစီလိုချင်တယ် (Kyaw doh/kyaw ma taxi lo chin de)",
+      "The bill, please": "ငွေရှင်းမလို့ပါ (Ngwe shin ma lo ba)",
+      "I'm vegetarian": "ကျွန်တော်/ကျွန်မ သစ်သီးဟင်းရွက်စားသူပါ (Kyaw doh/kyaw ma thit thi hin ywet za thu ba)",
+      "Water, please": "ရေပေးပါ (Ye pay ba)"
+    },
+    id: {
+      "Hello": "Halo",
+      "Thank you": "Terima kasih",
+      "Yes": "Ya",
+      "No": "Tidak",
+      "Excuse me": "Permisi",
+      "Where is the bathroom?": "Di mana kamar kecil?",
+      "How much does this cost?": "Berapa harganya?",
+      "I need a taxi": "Saya perlu taksi",
+      "The bill, please": "Minta tagihan",
+      "I'm vegetarian": "Saya vegetarian",
+      "Water, please": "Air, tolong"
     }
   };
 
-  // Google Translate API simulation
+  // Self-contained translation function without Google Translate API
   const simulateTranslation = (text: string, source: string, target: string) => {
     setIsTranslating(true);
     
     // Simulate API delay
     setTimeout(() => {
-      // For demo purposes, we'll use some predefined translations
-      // In a real app, this would call the Google Translate API
-      
       let result = "";
       
-      // Check if we have a canned response for common phrases
-      if (target === "th" && commonResponses.th[text]) {
-        result = commonResponses.th[text];
-      } else if (target === "vi" && commonResponses.vi[text]) {
-        result = commonResponses.vi[text];
-      } else if (target === "km" && commonResponses.km[text]) {
-        result = commonResponses.km[text];
+      // Check if we have a predefined translation for this phrase
+      if (commonResponses[target] && commonResponses[target][text]) {
+        // Direct match found in our dictionary
+        result = commonResponses[target][text];
       } else {
-        // For other languages/phrases, create a simulated translation
-        // This would be replaced with actual API call results
-        result = `[${getLanguageName(target)} Translation]: ${text}`;
+        // No exact match, check for partial matches
+        const targetDict = commonResponses[target] || {};
+        
+        // Try to find similar phrases
+        const keys = Object.keys(targetDict);
+        let bestMatch = "";
+        let highestSimilarity = 0;
+        
+        // Simple word matching algorithm
+        for (const key of keys) {
+          const keyWords = key.toLowerCase().split(" ");
+          const textWords = text.toLowerCase().split(" ");
+          
+          // Count matching words
+          const matchingWords = keyWords.filter(word => textWords.includes(word)).length;
+          const similarity = matchingWords / Math.max(keyWords.length, textWords.length);
+          
+          if (similarity > highestSimilarity && similarity > 0.3) {
+            highestSimilarity = similarity;
+            bestMatch = key;
+          }
+        }
+        
+        if (bestMatch && targetDict[bestMatch]) {
+          // Found a similar phrase
+          result = targetDict[bestMatch] + " (similar match)";
+        } else {
+          // No match found, provide a basic placeholder translation
+          const transliterations: Record<string, (t: string) => string> = {
+            th: (t) => `[${t} - ภาษาไทย]`,
+            vi: (t) => `[${t} - Tiếng Việt]`,
+            km: (t) => `[${t} - ភាសាខ្មែរ]`,
+            ms: (t) => `[${t} - Bahasa Melayu]`,
+            fil: (t) => `[${t} - Filipino]`,
+            lo: (t) => `[${t} - ພາສາລາວ]`,
+            my: (t) => `[${t} - မြန်မာဘာသာ]`,
+            id: (t) => `[${t} - Bahasa Indonesia]`
+          };
+          
+          if (transliterations[target]) {
+            result = transliterations[target](text);
+          } else {
+            result = `[${getLanguageName(target)}]: ${text}`;
+          }
+        }
       }
       
       setTranslatedText(result);
