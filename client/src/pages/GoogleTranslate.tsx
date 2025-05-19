@@ -970,31 +970,29 @@ const GoogleTranslate = () => {
                       </Button>
                     </div>
                     
-                    <div className={`p-4 rounded-lg border-2 transition-all min-h-[150px] ${isListening ? "border-primary animate-pulse" : "border-neutral-200"}`}>
-                      {isListening ? (
-                        <div className="flex flex-col items-center justify-center h-full">
-                          {!voiceDetected ? (
-                            <>
-                              <div className="w-16 h-16 mb-2 flex items-center justify-center">
-                                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-                                  <Mic className="h-6 w-6 text-primary" />
-                                </div>
-                              </div>
-                              <p className="text-neutral-500 mb-4">Listening...</p>
-                            </>
-                          ) : (
-                            <>
-                              <div className="w-full">
-                                <p className="font-medium">{voiceText}</p>
-                              </div>
-                            </>
-                          )}
+                    <div className="p-4 rounded-lg border-2 transition-all min-h-[150px] border-neutral-200">
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <div className="w-full mb-4">
+                          <Textarea 
+                            placeholder="Type what you would say..." 
+                            value={voiceText}
+                            onChange={(e) => setVoiceText(e.target.value)}
+                            className="min-h-[100px]"
+                          />
                         </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-neutral-400">
-                          <Mic className="h-8 w-8 mb-2 opacity-30" />
-                        </div>
-                      )}
+                        <Button 
+                          onClick={() => {
+                            if (voiceText.trim()) {
+                              setVoiceDetected(true);
+                              simulateTranslation(voiceText, sourceLanguage, targetLanguage);
+                            }
+                          }}
+                          className="w-full"
+                        >
+                          <Mic className="h-5 w-5 mr-2" />
+                          Translate What I Said
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   
