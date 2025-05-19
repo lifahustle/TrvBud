@@ -634,7 +634,7 @@ const GoogleTranslate = () => {
     }
   };
   
-  // In a real app, this would connect to the device's speech recognition API
+  // This simulates connecting to the device's speech recognition API
   const startListening = () => {
     setIsListening(true);
     setVoiceDetected(false);
@@ -643,11 +643,24 @@ const GoogleTranslate = () => {
     // Clear any previous translation when starting a new recording
     setTranslatedText("");
     
-    // In a real implementation, this would activate the Web Speech API
-    // and listen for speech input from the microphone
-    
-    // For our simulation, we'll have visual animation to show it's listening
-    // but require the simulation button to populate text (like real speech recognition)
+    // Begin voice recognition simulation after a short delay
+    // This simulates a microphone picking up ambient noise and beginning to process
+    setTimeout(() => {
+      // Simulate automatic voice detection without any prompt or user intervention
+      setVoiceDetected(true);
+      // Pick a phrase based on the selected languages
+      const commonPhrases = [
+        "Hello, how are you?",
+        "Where is the nearest hotel?",
+        "How much does this cost?",
+        "I need a taxi to the airport",
+        "Is there a restaurant nearby?",
+        "What time is check-in?",
+        "I'd like to make a reservation"
+      ];
+      const randomPhrase = commonPhrases[Math.floor(Math.random() * commonPhrases.length)];
+      simulateVoiceRecognition(randomPhrase);
+    }, 2000);
   };
   
   // This mimics the behavior of the Google Translate voice feature
@@ -968,29 +981,10 @@ const GoogleTranslate = () => {
                                 </div>
                               </div>
                               <p className="text-neutral-500 mb-4">Listening...</p>
-                              
-                              {/* Test buttons */}
-                              <div className="flex flex-col space-y-2">
-                                <Button 
-                                  onClick={() => simulateVoiceRecognition("Where is the nearest restaurant?")}
-                                  variant="outline"
-                                  size="sm"
-                                >
-                                  Test: Restaurant
-                                </Button>
-                                <Button 
-                                  onClick={() => simulateVoiceRecognition("How much does this cost?")}
-                                  variant="outline"
-                                  size="sm"
-                                >
-                                  Test: Price
-                                </Button>
-                              </div>
                             </>
                           ) : (
                             <>
                               <div className="w-full">
-                                <p className="text-neutral-400 text-sm mb-2">Detected:</p>
                                 <p className="font-medium">{voiceText}</p>
                               </div>
                             </>
@@ -999,7 +993,6 @@ const GoogleTranslate = () => {
                       ) : (
                         <div className="flex flex-col items-center justify-center h-full text-neutral-400">
                           <Mic className="h-8 w-8 mb-2 opacity-30" />
-                          <p>Click the microphone button to start</p>
                         </div>
                       )}
                     </div>
