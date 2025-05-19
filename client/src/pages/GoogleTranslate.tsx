@@ -634,6 +634,7 @@ const GoogleTranslate = () => {
     }
   };
   
+  // In a real app, this would connect to the device's speech recognition API
   const startListening = () => {
     setIsListening(true);
     setVoiceDetected(false);
@@ -642,58 +643,102 @@ const GoogleTranslate = () => {
     // Clear any previous translation when starting a new recording
     setTranslatedText("");
     
-    // Just activate the listening state without automatically adding text
-    // In a real app, this would activate the device microphone
-    // and wait for actual speech input
+    // In a real implementation, this would activate the Web Speech API
+    // and listen for speech input from the microphone
     
-    // In this demo, we'll show the listening state but require manual submission
-    // This better matches real behavior where text only appears after speaking
+    // For our simulation, we'll have visual animation to show it's listening
+    // but require the simulation button to populate text (like real speech recognition)
   };
   
-  // Manual "speech" submission for demo purposes
-  const submitSpeech = () => {
+  // This mimics the behavior of the Google Translate voice feature
+  const simulateVoiceRecognition = (phrase: string) => {
     if (!isListening) return;
     
-    // The user would normally speak, and their speech would be recognized
-    // For the demo, let's provide a way to submit a sample phrase manually
-    
-    setVoiceDetected(true);
-    setVoiceText("Hello, how can I help you?");
-    
-    // Stop listening and translate the input
-    stopListening();
-    simulateTranslation("Hello, how can I help you?", sourceLanguage, targetLanguage);
+    // Real voice recognition would incrementally update as you speak
+    // We'll simulate that with a typing effect
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= phrase.length) {
+        // Update detected text letter by letter
+        setVoiceText(phrase.substring(0, currentIndex));
+        setVoiceDetected(true);
+        currentIndex++;
+      } else {
+        // Done typing, clear interval and process the translation
+        clearInterval(typingInterval);
+        setTimeout(() => {
+          stopListening();
+          simulateTranslation(phrase, sourceLanguage, targetLanguage);
+        }, 500);
+      }
+    }, 50); // Speed of "typing" simulation
   };
   
   const stopListening = () => {
     setIsListening(false);
   };
   
-  // Camera translation functionality
+  // Camera translation functionality - simulates Google Translate's camera feature
   const activateCamera = () => {
     setCameraActive(true);
+    // In a real implementation, this would request camera permissions
+    // and show the camera viewfinder
+  };
+  
+  // Sample text examples from different languages for camera translation
+  const sampleTexts = {
+    th: {
+      image: "https://images.unsplash.com/photo-1546407341-a9fd63f9a42a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+      text: "อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿"
+    },
+    vi: {
+      image: "https://images.unsplash.com/photo-1583077874340-79db6564672e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+      text: "Thực đơn Việt Nam\nPhở bò - Beef noodle soup - 120k\nBánh mì - Vietnamese sandwich - 45k\nCà phê sữa đá - Iced milk coffee - 35k"
+    },
+    km: {
+      image: "https://images.unsplash.com/photo-1583321500900-82807e458a3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+      text: "មុខម្ហូបខ្មែរ\nអាម៉ុក - Amok Fish Curry - 8$\nបាយចា - Fried Rice - 5$\nគុយទាវ - Noodle Soup - 6$"
+    }
   };
   
   const captureImage = () => {
-    // In a real implementation, this would access the device camera
-    // For simulation, we'll use a sample image
+    // In a real implementation, this would take a photo with the device camera
+    // For simulation, we'll rotate through sample images
     setCameraActive(false);
     setIsProcessingImage(true);
     
-    // Simulate processing delay
-    setTimeout(() => {
-      // Sample image (base64 encoded)
-      const sampleImage = "https://images.unsplash.com/photo-1546407341-a9fd63f9a42a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGhhaSUyMG1lbnV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60";
-      setImagePreview(sampleImage);
+    // Pick a random sample based on the target language
+    const langKey = (targetLanguage === 'en' ? 
+                     (sourceLanguage === 'en' ? 'th' : sourceLanguage) : 
+                     targetLanguage) as keyof typeof sampleTexts;
+    
+    const sample = sampleTexts[langKey] || sampleTexts.th;
+    
+    // Add real-time OCR-like effect with progressive text recognition
+    let currentTextLength = 0;
+    const textRecognitionInterval = setInterval(() => {
+      if (currentTextLength === 0) {
+        // First show the image
+        setImagePreview(sample.image);
+      }
       
-      // Simulate text extraction
-      setImageText("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿");
-      setIsProcessingImage(false);
-      
-      // Auto translate the extracted text
-      setInputText("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿");
-      simulateTranslation("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿", "th", "en");
-    }, 2000);
+      if (currentTextLength <= sample.text.length) {
+        // Gradually reveal the "recognized" text
+        setImageText(sample.text.substring(0, currentTextLength));
+        currentTextLength += 10; // Increment by chunks for more realistic effect
+      } else {
+        // Done with text recognition
+        clearInterval(textRecognitionInterval);
+        setIsProcessingImage(false);
+        
+        // Auto translate the extracted text
+        setInputText(sample.text);
+        
+        // Determine source language based on the sample
+        const detectedLang = Object.keys(sampleTexts).find(key => sampleTexts[key as keyof typeof sampleTexts].text === sample.text) || 'th';
+        simulateTranslation(sample.text, detectedLang, targetLanguage === detectedLang ? 'en' : targetLanguage);
+      }
+    }, 200);
   };
   
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -924,21 +969,23 @@ const GoogleTranslate = () => {
                               </div>
                               <p className="text-neutral-500 mb-4">Listening...</p>
                               
-                              {/* For demo: Button to simulate speaking */}
-                              <Button 
-                                onClick={() => {
-                                  setVoiceDetected(true);
-                                  setVoiceText("Where is the nearest restaurant?");
-                                  setTimeout(() => {
-                                    stopListening();
-                                    simulateTranslation("Where is the nearest restaurant?", sourceLanguage, targetLanguage);
-                                  }, 500);
-                                }}
-                                variant="outline"
-                                size="sm"
-                              >
-                                Simulate speaking: "Where is the nearest restaurant?"
-                              </Button>
+                              {/* For demo: Buttons to simulate speaking different phrases */}
+                              <div className="flex flex-col space-y-2">
+                                <Button 
+                                  onClick={() => simulateVoiceRecognition("Where is the nearest restaurant?")}
+                                  variant="outline"
+                                  size="sm"
+                                >
+                                  Speak: "Where is the nearest restaurant?"
+                                </Button>
+                                <Button 
+                                  onClick={() => simulateVoiceRecognition("How much does this cost?")}
+                                  variant="outline"
+                                  size="sm"
+                                >
+                                  Speak: "How much does this cost?"
+                                </Button>
+                              </div>
                             </>
                           ) : (
                             <>
