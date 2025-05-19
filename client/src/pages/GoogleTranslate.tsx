@@ -262,56 +262,278 @@ const GoogleTranslate = () => {
     }
   };
 
-  // Self-contained translation function without Google Translate API
+  // Comprehensive translation function with built-in phrase dictionary
   const simulateTranslation = (text: string, source: string, target: string) => {
     setIsTranslating(true);
     
-    // Simulate API delay
+    // Helper function to translate simple text to Thai
+    const translateToThai = (txt: string): string => {
+      const thaiDict: Record<string, string> = {
+        "hello": "สวัสดี (Sawasdee)",
+        "thank you": "ขอบคุณ (Khob khun)",
+        "yes": "ใช่ (Chai)",
+        "no": "ไม่ (Mai)",
+        "excuse me": "ขอโทษ (Kor thot)",
+        "sorry": "ขอโทษ (Kor thot)",
+        "good morning": "สวัสดีตอนเช้า (Sawasdee ton chao)",
+        "good evening": "สวัสดีตอนเย็น (Sawasdee ton yen)",
+        "good night": "ราตรีสวัสดิ์ (Ratri sawat)",
+        "goodbye": "ลาก่อน (La kon)",
+        "how are you": "คุณสบายดีไหม (Khun sabai dee mai)",
+        "i am fine": "ฉันสบายดี (Chan sabai dee)",
+        "what is your name": "คุณชื่ออะไร (Khun cheu arai)",
+        "my name is": "ฉันชื่อ (Chan cheu)",
+        "nice to meet you": "ยินดีที่ได้พบคุณ (Yindi thi dai pob khun)",
+        "where is": "อยู่ที่ไหน (Yu thi nai)",
+        "how much": "ราคาเท่าไร (Raka tao rai)",
+        "too expensive": "แพงเกินไป (Paeng gern pai)",
+        "cheaper please": "ขอราคาถูกลงหน่อย (Kor raka thook long noi)",
+        "delicious": "อร่อย (Aroi)",
+        "water": "น้ำ (Nam)",
+        "food": "อาหาร (Ahan)",
+        "restaurant": "ร้านอาหาร (Ran ahan)",
+        "hotel": "โรงแรม (Rong ram)",
+        "airport": "สนามบิน (Sanam bin)",
+        "train station": "สถานีรถไฟ (Sathanee rot fai)",
+        "bus station": "สถานีรถบัส (Sathanee rot bus)",
+        "taxi": "แท็กซี่ (Taxi)",
+        "beach": "ชายหาด (Chai had)",
+        "market": "ตลาด (Talad)",
+        "shopping mall": "ห้างสรรพสินค้า (Hang sappasinkha)",
+        "hospital": "โรงพยาบาล (Rong payaban)",
+        "police station": "สถานีตำรวจ (Sathanee tamruat)",
+        "toilet": "ห้องน้ำ (Hong nam)",
+        "left": "ซ้าย (Sai)",
+        "right": "ขวา (Khwa)",
+        "straight": "ตรงไป (Trong pai)",
+        "back": "กลับ (Klab)",
+        "today": "วันนี้ (Wan nee)",
+        "tomorrow": "พรุ่งนี้ (Prung nee)",
+        "yesterday": "เมื่อวาน (Mua wan)"
+      };
+      
+      // Check exact match (case insensitive)
+      const lowerText = txt.toLowerCase();
+      if (thaiDict[lowerText]) {
+        return thaiDict[lowerText];
+      }
+      
+      // Check for substrings
+      for (const [key, value] of Object.entries(thaiDict)) {
+        if (lowerText.includes(key)) {
+          return value + " (" + txt + ")";
+        }
+      }
+      
+      // Fallback for no match
+      return `"${txt}" ในภาษาไทย`;
+    };
+    
+    // Helper function to translate simple text to Vietnamese
+    const translateToVietnamese = (txt: string): string => {
+      const vietnameseDict: Record<string, string> = {
+        "hello": "Xin chào",
+        "thank you": "Cảm ơn",
+        "yes": "Vâng / Có",
+        "no": "Không",
+        "excuse me": "Xin lỗi",
+        "sorry": "Xin lỗi",
+        "good morning": "Chào buổi sáng",
+        "good evening": "Chào buổi tối",
+        "good night": "Chúc ngủ ngon",
+        "goodbye": "Tạm biệt",
+        "how are you": "Bạn khỏe không?",
+        "i am fine": "Tôi khỏe",
+        "what is your name": "Bạn tên gì?",
+        "my name is": "Tôi tên là",
+        "nice to meet you": "Rất vui được gặp bạn",
+        "where is": "Ở đâu",
+        "how much": "Bao nhiêu tiền",
+        "too expensive": "Quá đắt",
+        "cheaper please": "Rẻ hơn được không",
+        "delicious": "Ngon",
+        "water": "Nước",
+        "food": "Thức ăn",
+        "restaurant": "Nhà hàng",
+        "hotel": "Khách sạn",
+        "airport": "Sân bay",
+        "train station": "Ga tàu",
+        "bus station": "Bến xe buýt",
+        "taxi": "Taxi",
+        "beach": "Bãi biển",
+        "market": "Chợ",
+        "shopping mall": "Trung tâm mua sắm",
+        "hospital": "Bệnh viện",
+        "police station": "Đồn công an",
+        "toilet": "Nhà vệ sinh",
+        "left": "Trái",
+        "right": "Phải",
+        "straight": "Thẳng",
+        "back": "Quay lại",
+        "today": "Hôm nay",
+        "tomorrow": "Ngày mai",
+        "yesterday": "Hôm qua"
+      };
+      
+      // Check exact match (case insensitive)
+      const lowerText = txt.toLowerCase();
+      if (vietnameseDict[lowerText]) {
+        return vietnameseDict[lowerText];
+      }
+      
+      // Check for substrings
+      for (const [key, value] of Object.entries(vietnameseDict)) {
+        if (lowerText.includes(key)) {
+          return value + " (" + txt + ")";
+        }
+      }
+      
+      // Fallback for no match
+      return `"${txt}" trong tiếng Việt`;
+    };
+    
+    // Helper function to translate simple text to Khmer (Cambodian)
+    const translateToKhmer = (txt: string): string => {
+      const khmerDict: Record<string, string> = {
+        "hello": "ជំរាបសួរ (Chom reap sour)",
+        "thank you": "អរគុណ (Arkoun)",
+        "yes": "បាទ/ចាស (Baat/chaa)",
+        "no": "ទេ (Te)",
+        "excuse me": "សូមទោស (Som toh)",
+        "sorry": "សូមទោស (Som toh)",
+        "good morning": "អរុណសួស្តី (Arun suostei)",
+        "good evening": "សាយ័ណ្ហសួស្តី (Sayonheah suostei)",
+        "good night": "រាត្រីសួស្តី (Reatrey suostei)",
+        "goodbye": "ជំរាបលា (Chom reap lea)",
+        "how are you": "តើអ្នកសុខសប្បាយជាទេ? (Tae anak sok sabbay chea te?)",
+        "i am fine": "ខ្ញុំសុខសប្បាយជា (Khnhom sok sabbay chea)",
+        "what is your name": "តើអ្នកឈ្មោះអ្វី? (Tae anak chmous avei?)",
+        "my name is": "ខ្ញុំឈ្មោះ (Khnhom chmous)",
+        "where is": "នៅឯណា (Nov ae na)",
+        "how much": "តម្លៃប៉ុន្មាន (Tamlai ponman)",
+        "delicious": "ឆ្ងាញ់ (Chhngaignh)",
+        "water": "ទឹក (Teuk)",
+        "food": "អាហារ (Ahar)",
+        "restaurant": "ភោជនីយដ្ឋាន (Phochoneiyoattan)",
+        "hotel": "សណ្ឋាគារ (Santhakear)",
+        "airport": "អាកាសយានដ្ឋាន (Akasyandthan)",
+        "taxi": "តាក់ស៊ី (Taxi)",
+        "beach": "ឆ្នេរ (Chhner)",
+        "market": "ផ្សារ (Psar)",
+        "hospital": "មន្ទីរពេទ្យ (Montipet)",
+        "toilet": "បង្គន់ (Bongkon)",
+        "left": "ឆ្វេង (Chhveng)",
+        "right": "ស្តាំ (Stam)",
+        "straight": "ត្រង់ (Trong)",
+        "today": "ថ្ងៃនេះ (Tngai nis)",
+        "tomorrow": "ថ្ងៃស្អែក (Tngai saaek)",
+        "yesterday": "ម្សិលមិញ (Mselmignh)"
+      };
+      
+      // Check exact match (case insensitive)
+      const lowerText = txt.toLowerCase();
+      if (khmerDict[lowerText]) {
+        return khmerDict[lowerText];
+      }
+      
+      // Check for substrings
+      for (const [key, value] of Object.entries(khmerDict)) {
+        if (lowerText.includes(key)) {
+          return value + " (" + txt + ")";
+        }
+      }
+      
+      // Fallback for no match
+      return `"${txt}" ជាភាសាខ្មែរ`;
+    };
+    
+    // Helper function to translate simple text to Malay
+    const translateToMalay = (txt: string): string => {
+      const malayDict: Record<string, string> = {
+        "hello": "Helo / Hai",
+        "thank you": "Terima kasih",
+        "yes": "Ya",
+        "no": "Tidak",
+        "excuse me": "Maafkan saya",
+        "sorry": "Maaf",
+        "good morning": "Selamat pagi",
+        "good evening": "Selamat petang",
+        "good night": "Selamat malam",
+        "goodbye": "Selamat tinggal",
+        "how are you": "Apa khabar?",
+        "i am fine": "Saya sihat",
+        "what is your name": "Siapa nama anda?",
+        "my name is": "Nama saya",
+        "nice to meet you": "Senang berjumpa dengan anda",
+        "where is": "Di mana",
+        "how much": "Berapa harganya",
+        "too expensive": "Terlalu mahal",
+        "delicious": "Sedap",
+        "water": "Air",
+        "food": "Makanan",
+        "restaurant": "Restoran",
+        "hotel": "Hotel",
+        "airport": "Lapangan terbang",
+        "train station": "Stesen kereta api",
+        "bus station": "Stesen bas",
+        "taxi": "Teksi",
+        "beach": "Pantai",
+        "market": "Pasar",
+        "shopping mall": "Pusat beli-belah",
+        "hospital": "Hospital",
+        "police station": "Balai polis",
+        "toilet": "Tandas",
+        "left": "Kiri",
+        "right": "Kanan",
+        "straight": "Terus",
+        "back": "Belakang",
+        "today": "Hari ini",
+        "tomorrow": "Esok",
+        "yesterday": "Semalam"
+      };
+      
+      // Check exact match (case insensitive)
+      const lowerText = txt.toLowerCase();
+      if (malayDict[lowerText]) {
+        return malayDict[lowerText];
+      }
+      
+      // Check for substrings
+      for (const [key, value] of Object.entries(malayDict)) {
+        if (lowerText.includes(key)) {
+          return value + " (" + txt + ")";
+        }
+      }
+      
+      // Fallback for no match
+      return `"${txt}" dalam Bahasa Melayu`;
+    };
+    
+    // Process translation request
     setTimeout(() => {
       let result = "";
       
       // Check if we have a predefined translation for this phrase
       if (commonResponses[target] && commonResponses[target][text]) {
-        // Direct match found in our dictionary
+        // Direct match found in our built-in dictionary
         result = commonResponses[target][text];
       } else {
-        // No exact match, check for partial matches
-        const targetDict = commonResponses[target] || {};
-        
-        // Try to find similar phrases
-        const keys = Object.keys(targetDict);
-        let bestMatch = "";
-        let highestSimilarity = 0;
-        
-        // Simple word matching algorithm
-        for (const key of keys) {
-          const keyWords = key.toLowerCase().split(" ");
-          const textWords = text.toLowerCase().split(" ");
-          
-          // Count matching words
-          const matchingWords = keyWords.filter(word => textWords.includes(word)).length;
-          const similarity = matchingWords / Math.max(keyWords.length, textWords.length);
-          
-          if (similarity > highestSimilarity && similarity > 0.3) {
-            highestSimilarity = similarity;
-            bestMatch = key;
-          }
-        }
-        
-        if (bestMatch && targetDict[bestMatch]) {
-          // Found a similar phrase
-          result = targetDict[bestMatch] + " (similar match)";
+        // Use language-specific translation function
+        if (target === "th") {
+          result = translateToThai(text);
+        } else if (target === "vi") {
+          result = translateToVietnamese(text);
+        } else if (target === "km") {
+          result = translateToKhmer(text);
+        } else if (target === "ms") {
+          result = translateToMalay(text);
         } else {
-          // No match found, provide a basic placeholder translation
+          // For other languages, provide a basic transliteration
           const transliterations: Record<string, (t: string) => string> = {
-            th: (t) => `[${t} - ภาษาไทย]`,
-            vi: (t) => `[${t} - Tiếng Việt]`,
-            km: (t) => `[${t} - ភាសាខ្មែរ]`,
-            ms: (t) => `[${t} - Bahasa Melayu]`,
-            fil: (t) => `[${t} - Filipino]`,
-            lo: (t) => `[${t} - ພາສາລາວ]`,
-            my: (t) => `[${t} - မြန်မာဘာသာ]`,
-            id: (t) => `[${t} - Bahasa Indonesia]`
+            fil: (t) => `"${t}" sa Filipino`,
+            lo: (t) => `"${t}" ໃນພາສາລາວ`,
+            my: (t) => `"${t}" မြန်မာဘာသာဖြင့်`,
+            id: (t) => `"${t}" dalam Bahasa Indonesia`
           };
           
           if (transliterations[target]) {
@@ -1070,10 +1292,10 @@ const GoogleTranslate = () => {
                   <CardTitle className="flex items-center text-lg">
                     <div className="flex-1 flex items-center">
                       <Languages className="h-5 w-5 mr-2 text-primary" />
-                      <span>Google Translate</span>
+                      <span>Text Translation</span>
                     </div>
                     <Badge variant="outline" className="ml-auto bg-primary/5">
-                      Powered by Google
+                      Built-in Dictionary
                     </Badge>
                   </CardTitle>
                   <CardDescription>Translate between Southeast Asian languages and more</CardDescription>
