@@ -642,61 +642,27 @@ const GoogleTranslate = () => {
     // Clear any previous translation when starting a new recording
     setTranslatedText("");
     
-    // Simulate voice detection after a short delay
-    setTimeout(() => {
-      setVoiceDetected(true);
-      
-      // Get a realistic voice sample based on the selected language
-      let voiceSample = "";
-      
-      if (sourceLanguage === "th") {
-        // Thai voice samples
-        const thaiSamples = [
-          "สวัสดี",
-          "ขอถามหน่อย ห้องน้ำอยู่ที่ไหน",
-          "อาหารนี้อร่อยมาก",
-          "ฉันต้องการเรียกแท็กซี่"
-        ];
-        voiceSample = thaiSamples[Math.floor(Math.random() * thaiSamples.length)];
-      } else if (sourceLanguage === "vi") {
-        // Vietnamese voice samples
-        const vietnameseSamples = [
-          "Xin chào",
-          "Nhà vệ sinh ở đâu?",
-          "Món ăn này rất ngon",
-          "Tôi cần gọi taxi"
-        ];
-        voiceSample = vietnameseSamples[Math.floor(Math.random() * vietnameseSamples.length)];
-      } else if (sourceLanguage === "km") {
-        // Khmer voice samples
-        const khmerSamples = [
-          "ជំរាបសួរ",
-          "តើបន្ទប់ទឹកនៅឯណា?",
-          "អាហារនេះឆ្ងាញ់ណាស់",
-          "ខ្ញុំត្រូវការហៅតាក់ស៊ី"
-        ];
-        voiceSample = khmerSamples[Math.floor(Math.random() * khmerSamples.length)];
-      } else {
-        // English/default voice samples - clean, direct phrases without suggested extensions
-        const englishSamples = [
-          "Hello",
-          "Where is the bathroom?",
-          "This food is delicious",
-          "I need to call a taxi"
-        ];
-        voiceSample = englishSamples[Math.floor(Math.random() * englishSamples.length)];
-      }
-      
-      // Set the detected voice text immediately without incremental updates
-      setVoiceText(voiceSample);
-      
-      // Automatically stop listening after voice is detected, like real Google Translate
-      setTimeout(() => {
-        stopListening();
-        // Translate the detected text
-        simulateTranslation(voiceSample, sourceLanguage, targetLanguage);
-      }, 1500);
-    }, 1000);
+    // Just activate the listening state without automatically adding text
+    // In a real app, this would activate the device microphone
+    // and wait for actual speech input
+    
+    // In this demo, we'll show the listening state but require manual submission
+    // This better matches real behavior where text only appears after speaking
+  };
+  
+  // Manual "speech" submission for demo purposes
+  const submitSpeech = () => {
+    if (!isListening) return;
+    
+    // The user would normally speak, and their speech would be recognized
+    // For the demo, let's provide a way to submit a sample phrase manually
+    
+    setVoiceDetected(true);
+    setVoiceText("Hello, how can I help you?");
+    
+    // Stop listening and translate the input
+    stopListening();
+    simulateTranslation("Hello, how can I help you?", sourceLanguage, targetLanguage);
   };
   
   const stopListening = () => {
@@ -956,7 +922,23 @@ const GoogleTranslate = () => {
                                   <Mic className="h-6 w-6 text-primary" />
                                 </div>
                               </div>
-                              <p className="text-neutral-500">Listening...</p>
+                              <p className="text-neutral-500 mb-4">Listening...</p>
+                              
+                              {/* For demo: Button to simulate speaking */}
+                              <Button 
+                                onClick={() => {
+                                  setVoiceDetected(true);
+                                  setVoiceText("Where is the nearest restaurant?");
+                                  setTimeout(() => {
+                                    stopListening();
+                                    simulateTranslation("Where is the nearest restaurant?", sourceLanguage, targetLanguage);
+                                  }, 500);
+                                }}
+                                variant="outline"
+                                size="sm"
+                              >
+                                Simulate speaking: "Where is the nearest restaurant?"
+                              </Button>
                             </>
                           ) : (
                             <>
