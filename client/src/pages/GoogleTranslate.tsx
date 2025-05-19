@@ -30,7 +30,15 @@ import {
   Check,
   History,
   Trash2,
-  GlobeIcon
+  GlobeIcon,
+  Camera,
+  Image,
+  RefreshCw,
+  PauseCircle,
+  PlayCircle,
+  Send,
+  Loader2,
+  FileImage
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -56,8 +64,21 @@ const GoogleTranslate = () => {
   }>>([]);
   const [newPhraseCategory, setNewPhraseCategory] = useState<string>("general");
   const [activeTab, setActiveTab] = useState<string>("translate");
+  
+  // Voice translation states
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [voiceDetected, setVoiceDetected] = useState<boolean>(false);
+  const [voiceText, setVoiceText] = useState<string>("");
+  const [conversationMode, setConversationMode] = useState<boolean>(false);
+  
+  // Camera translation states
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageText, setImageText] = useState<string>("");
+  const [isProcessingImage, setIsProcessingImage] = useState<boolean>(false);
+  const [cameraActive, setCameraActive] = useState<boolean>(false);
 
   const outputRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Language options focused on Southeast Asian countries
   const languages = [
@@ -381,6 +402,105 @@ const GoogleTranslate = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
+  
+  // Voice recognition functionality
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+  
+  const startListening = () => {
+    setIsListening(true);
+    setVoiceDetected(false);
+    setVoiceText("");
+    
+    // Simulate voice detection after a short delay
+    setTimeout(() => {
+      setVoiceDetected(true);
+      // Simulate transcribing
+      let transcriptionProgress = "";
+      const phrases = [
+        "Hello",
+        "Hello, how are you?",
+        "Hello, how are you? Can you help me?",
+        "Hello, how are you? Can you help me find the nearest restaurant?"
+      ];
+      
+      let phraseIndex = 0;
+      const transcriptionInterval = setInterval(() => {
+        if (phraseIndex < phrases.length) {
+          transcriptionProgress = phrases[phraseIndex];
+          setVoiceText(transcriptionProgress);
+          phraseIndex++;
+        } else {
+          clearInterval(transcriptionInterval);
+          stopListening();
+          simulateTranslation(transcriptionProgress, sourceLanguage, targetLanguage);
+        }
+      }, 800);
+    }, 1000);
+  };
+  
+  const stopListening = () => {
+    setIsListening(false);
+  };
+  
+  // Camera translation functionality
+  const activateCamera = () => {
+    setCameraActive(true);
+  };
+  
+  const captureImage = () => {
+    // In a real implementation, this would access the device camera
+    // For simulation, we'll use a sample image
+    setCameraActive(false);
+    setIsProcessingImage(true);
+    
+    // Simulate processing delay
+    setTimeout(() => {
+      // Sample image (base64 encoded)
+      const sampleImage = "https://images.unsplash.com/photo-1546407341-a9fd63f9a42a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGhhaSUyMG1lbnV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60";
+      setImagePreview(sampleImage);
+      
+      // Simulate text extraction
+      setImageText("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿");
+      setIsProcessingImage(false);
+      
+      // Auto translate the extracted text
+      setInputText("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿");
+      simulateTranslation("อาหารไทย - Thai Food Menu\nต้มยำกุ้ง - Tom Yum Goong - 250฿\nผัดไทย - Pad Thai - 150฿\nข้าวผัด - Fried Rice - 120฿", "th", "en");
+    }, 2000);
+  };
+  
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    setIsProcessingImage(true);
+    
+    // Create file preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setImagePreview(result);
+      
+      // Simulate text extraction after a delay
+      setTimeout(() => {
+        // Sample extracted text (would be real OCR in production)
+        setImageText("Restaurant Menu\nAppetizers\nSpring Rolls - $5.99\nSatay Chicken - $7.99\nMain Dishes\nPad Thai - $12.99\nGreen Curry - $14.99");
+        setIsProcessingImage(false);
+        
+        // Auto translate
+        setInputText("Restaurant Menu\nAppetizers\nSpring Rolls - $5.99\nSatay Chicken - $7.99\nMain Dishes\nPad Thai - $12.99\nGreen Curry - $14.99");
+        simulateTranslation("Restaurant Menu\nAppetizers\nSpring Rolls - $5.99\nSatay Chicken - $7.99\nMain Dishes\nPad Thai - $12.99\nGreen Curry - $14.99", "en", targetLanguage);
+      }, 2000);
+    };
+    
+    reader.readAsDataURL(file);
+  };
 
   // Function to get language name from code
   const getLanguageName = (code: string): string => {
@@ -427,28 +547,520 @@ const GoogleTranslate = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Google Translate - Trv Bud</title>
-        <meta name="description" content="Translate phrases and have conversations in Southeast Asian languages with Google Translate integration." />
+        <title>Translate - Trv Bud</title>
+        <meta name="description" content="Translate phrases and have conversations in Southeast Asian languages with advanced translation features." />
       </Helmet>
       
-      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Google Translate</h1>
-      <p className="text-neutral-500 mb-8">Communicate easily in Southeast Asian countries with Google Translate</p>
+      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Translate</h1>
+      <p className="text-neutral-500 mb-8">Communicate easily in Southeast Asian countries with advanced translation tools</p>
       
       <Tabs defaultValue="translate" onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="translate" className="flex items-center">
             <Languages className="h-4 w-4 mr-2" />
-            <span>Translate</span>
+            <span>Text</span>
+          </TabsTrigger>
+          <TabsTrigger value="voice" className="flex items-center">
+            <Mic className="h-4 w-4 mr-2" />
+            <span>Voice</span>
+          </TabsTrigger>
+          <TabsTrigger value="camera" className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+              <circle cx="12" cy="13" r="3"></circle>
+            </svg>
+            <span>Camera</span>
           </TabsTrigger>
           <TabsTrigger value="saved" className="flex items-center">
             <ListPlus className="h-4 w-4 mr-2" />
-            <span>Saved Phrases</span>
+            <span>Saved</span>
           </TabsTrigger>
           <TabsTrigger value="common" className="flex items-center">
             <MessageCircle className="h-4 w-4 mr-2" />
-            <span>Common Phrases</span>
+            <span>Common</span>
           </TabsTrigger>
         </TabsList>
+        
+        <TabsContent value="voice">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card className="mb-6">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <div className="flex-1 flex items-center">
+                      <Mic className="h-5 w-5 mr-2 text-primary" />
+                      <span>Voice Translation</span>
+                    </div>
+                    <Badge variant="outline" className="ml-auto bg-primary/5">
+                      Speech Recognition
+                    </Badge>
+                  </CardTitle>
+                  <CardDescription>Speak and translate between Southeast Asian languages</CardDescription>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="flex flex-wrap mb-4 gap-2">
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-sm font-medium text-neutral-500 mb-1">Speak in</label>
+                      <Select 
+                        value={sourceLanguage} 
+                        onValueChange={setSourceLanguage}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languages.map((language) => (
+                            <SelectItem key={language.code} value={language.code}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="flex items-end mb-1">
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        onClick={handleSwapLanguages}
+                        className="rounded-full"
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-sm font-medium text-neutral-500 mb-1">Translate to</label>
+                      <Select 
+                        value={targetLanguage} 
+                        onValueChange={setTargetLanguage}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languages.map((language) => (
+                            <SelectItem key={language.code} value={language.code}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="space-y-2">
+                        <div className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            id="conversation-mode"
+                            checked={conversationMode}
+                            onChange={() => setConversationMode(!conversationMode)}
+                            className="mr-2"
+                          />
+                          <label htmlFor="conversation-mode" className="text-sm font-medium">
+                            Conversation Mode
+                          </label>
+                        </div>
+                        {conversationMode && (
+                          <p className="text-xs text-neutral-500">
+                            Will automatically detect language and translate back and forth
+                          </p>
+                        )}
+                      </div>
+                      
+                      <Button
+                        onClick={toggleListening}
+                        size="lg"
+                        className={isListening ? "bg-error hover:bg-error/90" : ""}
+                      >
+                        {isListening ? (
+                          <>
+                            <PauseCircle className="h-5 w-5 mr-2" />
+                            Stop Listening
+                          </>
+                        ) : (
+                          <>
+                            <Mic className="h-5 w-5 mr-2" />
+                            Start Speaking
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    <div className={`p-4 rounded-lg border-2 transition-all min-h-[150px] ${isListening ? "border-primary animate-pulse" : "border-neutral-200"}`}>
+                      {isListening ? (
+                        <div className="flex flex-col items-center justify-center h-full">
+                          {!voiceDetected ? (
+                            <>
+                              <div className="w-16 h-16 mb-2 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+                                  <Mic className="h-6 w-6 text-primary" />
+                                </div>
+                              </div>
+                              <p className="text-neutral-500">Listening...</p>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-full">
+                                <p className="text-neutral-400 text-sm mb-2">Detected speech:</p>
+                                <p className="font-medium">{voiceText}</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-neutral-400">
+                          <Mic className="h-8 w-8 mb-2 opacity-30" />
+                          <p>Tap "Start Speaking" and say something</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {translatedText && activeTab === "voice" && (
+                    <div className="border rounded-md p-3 bg-neutral-50 relative">
+                      <div className="text-sm text-neutral-500 mb-1">
+                        Translation ({getLanguageName(targetLanguage)}):
+                      </div>
+                      <div className="text-lg font-medium mb-2">{translatedText}</div>
+                      <div className="flex space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => speakText(translatedText, targetLanguage)}
+                        >
+                          <VolumeIcon className="h-4 w-4 mr-1" /> Listen
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => copyToClipboard(translatedText)}
+                        >
+                          <Copy className="h-4 w-4 mr-1" /> Copy
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={handleSavePhrase}
+                        >
+                          <ListPlus className="h-4 w-4 mr-1" /> Save
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center">
+                    <MessageCircle className="h-5 w-5 mr-2 text-primary" />
+                    Voice Tips
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Speaking Tips</h3>
+                      <ul className="text-sm space-y-2">
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Speak clearly and at a moderate pace</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Reduce background noise when possible</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Use short, simple sentences for better accuracy</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Try the conversation mode for natural back-and-forth</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-amber-50 rounded-md border border-amber-100 text-sm">
+                      <p className="font-medium text-amber-800 mb-1">In Conversation Mode:</p>
+                      <p className="text-amber-700">
+                        After your speech is translated, the app will automatically speak the translation aloud, making it perfect for real conversations with locals.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="camera">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card className="mb-6">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <div className="flex-1 flex items-center">
+                      <Camera className="h-5 w-5 mr-2 text-primary" />
+                      <span>Camera Translation</span>
+                    </div>
+                    <Badge variant="outline" className="ml-auto bg-primary/5">
+                      Text Recognition
+                    </Badge>
+                  </CardTitle>
+                  <CardDescription>Translate text from images and camera</CardDescription>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="flex flex-wrap mb-4 gap-2">
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-sm font-medium text-neutral-500 mb-1">Source language</label>
+                      <Select 
+                        value={sourceLanguage} 
+                        onValueChange={setSourceLanguage}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languages.map((language) => (
+                            <SelectItem key={language.code} value={language.code}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="flex items-end mb-1">
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        onClick={handleSwapLanguages}
+                        className="rounded-full"
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-sm font-medium text-neutral-500 mb-1">Translate to</label>
+                      <Select 
+                        value={targetLanguage} 
+                        onValueChange={setTargetLanguage}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languages.map((language) => (
+                            <SelectItem key={language.code} value={language.code}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    {cameraActive ? (
+                      <div className="relative rounded-lg overflow-hidden bg-black aspect-video flex items-center justify-center mb-4">
+                        <div className="text-white w-full h-full flex flex-col items-center justify-center">
+                          <Camera className="h-10 w-10 mb-2" />
+                          <p>Camera Preview (simulated)</p>
+                          
+                          <Button 
+                            onClick={captureImage}
+                            className="mt-4"
+                            size="lg"
+                          >
+                            <Camera className="h-5 w-5 mr-2" />
+                            Capture
+                          </Button>
+                        </div>
+                      </div>
+                    ) : imagePreview ? (
+                      <div className="mb-4">
+                        <div className="relative rounded-lg overflow-hidden mb-3">
+                          <img 
+                            src={imagePreview} 
+                            alt="Captured" 
+                            className="w-full object-contain max-h-[300px]" 
+                          />
+                        </div>
+                        
+                        {isProcessingImage ? (
+                          <div className="flex justify-center items-center py-4">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+                            <span>Extracting text...</span>
+                          </div>
+                        ) : (
+                          <div className="border rounded-md p-3 bg-neutral-50 relative mb-3">
+                            <div className="text-sm text-neutral-500 mb-1">
+                              Extracted text:
+                            </div>
+                            <div className="text-sm font-medium whitespace-pre-line mb-2">
+                              {imageText}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="flex space-x-2">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => {
+                              setImagePreview(null);
+                              setImageText("");
+                            }}
+                          >
+                            New Capture
+                          </Button>
+                          <Button 
+                            onClick={activateCamera}
+                          >
+                            <Camera className="h-4 w-4 mr-1" />
+                            Camera
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-2 border-dashed border-neutral-200 rounded-lg p-6 text-center">
+                        <div className="flex flex-col items-center justify-center space-y-3">
+                          <Camera className="h-10 w-10 text-neutral-300" />
+                          <div>
+                            <h3 className="text-neutral-600 font-medium mb-1">Capture or Upload Image</h3>
+                            <p className="text-neutral-400 text-sm mb-3">Take a photo of text to translate or upload an image</p>
+                          </div>
+                          <div className="flex flex-wrap justify-center gap-2">
+                            <Button
+                              onClick={activateCamera}
+                            >
+                              <Camera className="h-4 w-4 mr-1" />
+                              Use Camera
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => fileInputRef.current?.click()}
+                            >
+                              <FileImage className="h-4 w-4 mr-1" />
+                              Upload Image
+                            </Button>
+                            <input 
+                              type="file" 
+                              ref={fileInputRef}
+                              onChange={handleFileUpload}
+                              accept="image/*"
+                              className="hidden" 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {translatedText && activeTab === "camera" && !isProcessingImage && (
+                    <div className="border rounded-md p-3 bg-neutral-50 relative">
+                      <div className="text-sm text-neutral-500 mb-1">
+                        Translation ({getLanguageName(targetLanguage)}):
+                      </div>
+                      <div className="text-sm font-medium whitespace-pre-line mb-2">{translatedText}</div>
+                      <div className="flex space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => speakText(translatedText, targetLanguage)}
+                        >
+                          <VolumeIcon className="h-4 w-4 mr-1" /> Listen
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => copyToClipboard(translatedText)}
+                        >
+                          <Copy className="h-4 w-4 mr-1" /> Copy
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={handleSavePhrase}
+                        >
+                          <ListPlus className="h-4 w-4 mr-1" /> Save
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center">
+                    <Camera className="h-5 w-5 mr-2 text-primary" />
+                    Camera Tips
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Best Practices</h3>
+                      <ul className="text-sm space-y-2">
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Ensure good lighting for clear text capture</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Hold camera steady for better results</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Frame text properly in the camera view</span>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5 flex-shrink-0">
+                            <Check className="h-3 w-3" />
+                          </div>
+                          <span>Works with signs, menus, and printed materials</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-amber-50 rounded-md border border-amber-100 text-sm">
+                      <p className="font-medium text-amber-800 mb-1">Great for travels!</p>
+                      <p className="text-amber-700">
+                        Use camera translation for restaurant menus, street signs, information boards, and other text you encounter while traveling.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
         
         <TabsContent value="translate">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
