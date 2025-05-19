@@ -427,12 +427,12 @@ const Conversation = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Conversation Translator - Trv Bud</title>
-        <meta name="description" content="Translate phrases and have conversations in Southeast Asian languages with our travel translator tool." />
+        <title>Google Translate - Trv Bud</title>
+        <meta name="description" content="Translate phrases and have conversations in Southeast Asian languages with Google Translate integration." />
       </Helmet>
       
-      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Conversation Translator</h1>
-      <p className="text-neutral-500 mb-8">Communicate easily in Southeast Asian countries with our translation tools</p>
+      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Google Translate</h1>
+      <p className="text-neutral-500 mb-8">Communicate easily in Southeast Asian countries with Google Translate</p>
       
       <Tabs defaultValue="translate" onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-3 mb-8">
