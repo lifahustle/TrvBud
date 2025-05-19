@@ -13,7 +13,7 @@ const Navbar = () => {
     { name: "Transport", path: "/transport" },
     { name: "Money Mgt", path: "/money-management" },
     { name: "Visas", path: "/visas" },
-    { name: "Convo", path: "/conversation" },
+    { name: "Google Translate", path: "/google-translate" },
     { name: "My Trips", path: "/my-trips" },
   ];
 
