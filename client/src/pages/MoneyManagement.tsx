@@ -110,11 +110,11 @@ const MoneyManagement = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Money Management - Trv Bud</title>
+        <title>Wallet - Trv Bud</title>
         <meta name="description" content="Manage your travel money with currency exchange, budgeting tools, and expense tracking." />
       </Helmet>
       
-      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Money Management</h1>
+      <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Wallet</h1>
       <p className="text-neutral-500 mb-8">Exchange currencies, track expenses, and manage your travel budget</p>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -11,7 +11,7 @@ const Navbar = () => {
     { name: "Flights", path: "/flights" },
     { name: "Stays", path: "/stays" },
     { name: "Transport", path: "/transport" },
-    { name: "Money Mgt", path: "/money-management" },
+    { name: "Wallet", path: "/money-management" },
     { name: "Visas", path: "/visas" },
     { name: "Translate", path: "/google-translate" },
     { name: "My Trips", path: "/my-trips" },
