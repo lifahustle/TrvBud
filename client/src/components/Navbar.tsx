@@ -70,7 +70,7 @@ const Navbar = () => {
                     ? "border-primary text-primary"
                     : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
                 } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}>
-                  Let's Go!
+                  Travel
                   <ChevronDown className="w-3 h-3 ml-1" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
@@ -206,10 +206,10 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="sm:hidden" id="mobile-menu">
           <div className="pt-2 pb-3 space-y-1">
-            {/* Let's Go section in mobile - First */}
+            {/* Travel section in mobile - First */}
             <div className="border-b border-neutral-200 pb-2 mb-2">
               <div className="px-3 pb-2">
-                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Let's Go!</p>
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Travel</p>
               </div>
               {exploreMenuItems.map((item) => {
                 const IconComponent = item.icon;
