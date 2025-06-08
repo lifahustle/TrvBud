@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar, FileText, Wallet, BookOpen, Languages } from "lucide-react";
+import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar, FileText, Wallet, BookOpen, Languages, Bed } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -18,7 +18,6 @@ const Navbar = () => {
   });
 
   const navLinks = [
-    { name: "Stays", path: "/stays" },
     { 
       name: "Trips", 
       path: "/my-trips",
@@ -39,6 +38,7 @@ const Navbar = () => {
   const exploreMenuItems = [
     { name: "Latest Deals", path: "/", icon: DollarSign },
     { name: "Flights", path: "/flights", icon: Plane },
+    { name: "Stays", path: "/stays", icon: Bed },
     { name: "Transport", path: "/transport", icon: Car },
   ];
 
