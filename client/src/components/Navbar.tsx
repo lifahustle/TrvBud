@@ -24,10 +24,10 @@ const Navbar = () => {
       path: "/my-trips",
       hasDropdown: true,
       dropdownItems: [
-        { name: "Trip Planner", path: "/travel-planner" },
-        { name: "My Bookings", path: "/booking-manager" }
+        { name: "Trip Planner", path: "/travel-planner" }
       ]
     },
+    { name: "Itinerary", path: "/booking-manager" },
     { name: "Buddy", path: "/travel-buddy" },
     { name: "Trv Docs", path: "/travel-documents" },
     { name: "Wallet", path: "/money-management" },
