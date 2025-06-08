@@ -29,7 +29,7 @@ const Navbar = () => {
   ];
 
   const exploreMenuItems = [
-    { name: "Home", path: "/", icon: Compass },
+    { name: "Latest Deals", path: "/", icon: Compass },
     { name: "Flights", path: "/flights", icon: Plane },
     { name: "Transport", path: "/transport", icon: Car },
     { name: "Bookings", path: "/booking-manager", icon: Calendar },
