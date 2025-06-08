@@ -19,7 +19,15 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Stays", path: "/stays" },
-    { name: "Trips", path: "/my-trips" },
+    { 
+      name: "Trips", 
+      path: "/my-trips",
+      hasDropdown: true,
+      dropdownItems: [
+        { name: "Trip Planner", path: "/travel-planner" },
+        { name: "My Bookings", path: "/booking-manager" }
+      ]
+    },
     { name: "Buddy", path: "/travel-buddy" },
     { name: "Trv Docs", path: "/travel-documents" },
     { name: "Wallet", path: "/money-management" },
@@ -32,7 +40,6 @@ const Navbar = () => {
     { name: "Latest Deals", path: "/", icon: DollarSign },
     { name: "Flights", path: "/flights", icon: Plane },
     { name: "Transport", path: "/transport", icon: Car },
-    { name: "Bookings", path: "/booking-manager", icon: Calendar },
   ];
 
   const getMembershipIcon = (tier: string) => {
@@ -89,27 +96,53 @@ const Navbar = () => {
               </DropdownMenu>
               
               {navLinks.map((link) => (
-                <Link 
-                  key={link.path} 
-                  href={link.path}
-                  className={`${
-                    location === link.path
-                      ? "border-primary text-primary"
-                      : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
-                  } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}
-                >
-                  {link.name === "Trv Docs" ? (
-                    <>
-                      Trv <FileText className="w-4 h-4 ml-1" />
-                    </>
-                  ) : link.name === "Wallet" ? (
-                    <Wallet className="w-4 h-4" />
-                  ) : link.name === "Visas" ? (
-                    <BookOpen className="w-4 h-4" />
-                  ) : (
-                    link.name
-                  )}
-                </Link>
+                link.hasDropdown ? (
+                  <DropdownMenu key={link.path}>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        className={`${
+                          location === link.path || link.dropdownItems?.some(item => location === item.path)
+                            ? "border-primary text-primary"
+                            : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
+                        } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}
+                      >
+                        {link.name} <ChevronDown className="w-3 h-3 ml-1" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {link.dropdownItems?.map((item) => (
+                        <DropdownMenuItem key={item.path}>
+                          <Link href={item.path} className="w-full">
+                            {item.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Link 
+                    key={link.path} 
+                    href={link.path}
+                    className={`${
+                      location === link.path
+                        ? "border-primary text-primary"
+                        : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
+                    } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}
+                  >
+                    {link.name === "Trv Docs" ? (
+                      <>
+                        Trv <FileText className="w-4 h-4 ml-1" />
+                      </>
+                    ) : link.name === "Wallet" ? (
+                      <Wallet className="w-4 h-4" />
+                    ) : link.name === "Visas" ? (
+                      <BookOpen className="w-4 h-4" />
+                    ) : (
+                      link.name
+                    )}
+                  </Link>
+                )
               ))}
             </div>
           </div>
@@ -242,28 +275,50 @@ const Navbar = () => {
             </div>
             
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={`${
-                  location === link.path
-                    ? "bg-primary text-white"
-                    : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
-                } block pl-3 pr-4 py-2 text-base font-medium flex items-center`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.name === "Trv Docs" ? (
-                  <>
-                    Trv <FileText className="w-4 h-4 ml-1" />
-                  </>
-                ) : link.name === "Wallet" ? (
-                  <Wallet className="w-4 h-4" />
-                ) : link.name === "Visas" ? (
-                  <BookOpen className="w-4 h-4" />
-                ) : (
-                  link.name
-                )}
-              </Link>
+              link.hasDropdown ? (
+                <div key={link.path} className="space-y-1">
+                  <div className="pl-3 pr-4 py-2 text-base font-medium text-neutral-600 flex items-center">
+                    {link.name}
+                  </div>
+                  {link.dropdownItems?.map((item) => (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      className={`${
+                        location === item.path
+                          ? "bg-primary text-white"
+                          : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
+                      } block pl-6 pr-4 py-2 text-sm font-medium flex items-center`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className={`${
+                    location === link.path
+                      ? "bg-primary text-white"
+                      : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
+                  } block pl-3 pr-4 py-2 text-base font-medium flex items-center`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.name === "Trv Docs" ? (
+                    <>
+                      Trv <FileText className="w-4 h-4 ml-1" />
+                    </>
+                  ) : link.name === "Wallet" ? (
+                    <Wallet className="w-4 h-4" />
+                  ) : link.name === "Visas" ? (
+                    <BookOpen className="w-4 h-4" />
+                  ) : (
+                    link.name
+                  )}
+                </Link>
+              )
             ))}
           </div>
         </div>
