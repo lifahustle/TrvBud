@@ -28,7 +28,7 @@ const Navbar = () => {
         { name: "Booking Manager", path: "/booking-manager" }
       ]
     },
-    { name: "AI Bud", path: "/travel-buddy" },
+    { name: "Ai", path: "/travel-buddy" },
     { name: "Trv Docs", path: "/travel-documents" },
     { name: "Wallet", path: "/money-management" },
     { name: "Visas", path: "/visas" },
