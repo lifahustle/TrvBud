@@ -228,8 +228,8 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex items-center gap-3">
-                <Button asChild>
-                  <Link href="/membership">My TrvBUD</Link>
+                <Button variant="ghost" asChild>
+                  <Link href="/membership" className="text-blue-600 hover:text-blue-700 font-medium">Log In</Link>
                 </Button>
               </div>
             )}
