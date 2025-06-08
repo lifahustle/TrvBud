@@ -30,7 +30,6 @@ const Navbar = () => {
     { name: "Visas", path: "/visas" },
     { name: "Translate", path: "/google-translate" },
     { name: "Reviews", path: "/reviews" },
-    { name: "Favorites", path: "/favorites" },
     { name: "My Trips", path: "/my-trips" },
   ];
 
@@ -159,11 +158,8 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex items-center gap-3">
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
-                </Button>
                 <Button asChild>
-                  <Link href="/register">Join TrvBUD</Link>
+                  <Link href="/membership">My TrvBUD</Link>
                 </Button>
               </div>
             )}
