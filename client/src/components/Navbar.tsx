@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar } from "lucide-react";
+import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar, FileText } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -96,9 +96,15 @@ const Navbar = () => {
                     location === link.path
                       ? "border-primary text-primary"
                       : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
-                  } border-b-2 px-1 pt-1 text-sm font-medium nav-link`}
+                  } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}
                 >
-                  {link.name}
+                  {link.name === "Trv Docs" ? (
+                    <>
+                      Trv <FileText className="w-4 h-4 ml-1" />
+                    </>
+                  ) : (
+                    link.name
+                  )}
                 </Link>
               ))}
             </div>
@@ -239,10 +245,16 @@ const Navbar = () => {
                   location === link.path
                     ? "bg-primary text-white"
                     : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
-                } block pl-3 pr-4 py-2 text-base font-medium`}
+                } block pl-3 pr-4 py-2 text-base font-medium flex items-center`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {link.name}
+                {link.name === "Trv Docs" ? (
+                  <>
+                    Trv <FileText className="w-4 h-4 ml-1" />
+                  </>
+                ) : (
+                  link.name
+                )}
               </Link>
             ))}
           </div>
