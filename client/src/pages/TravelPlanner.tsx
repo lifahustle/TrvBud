@@ -1,19 +1,11 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { useQuery } from "@tanstack/react-query";
-import { 
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from "@/components/ui/tabs";
 import { 
   Card, 
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter
+  CardDescription
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,14 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
 import { Badge } from "@/components/ui/badge";
 import { 
   MapPin, 
   Calendar, 
   Users, 
   Clock, 
-  Route,
   Plus,
   Trash2,
   Star,
@@ -40,20 +30,24 @@ import {
   Utensils,
   Bed,
   Car,
-  Plane,
   Map,
   CheckCircle2,
   Edit3,
-  Share2,
-  Loader2,
-  Hotel,
-  ChevronDown,
-  ChevronUp,
-  PlaneTakeoff,
-  PlusCircle
+  Route
 } from "lucide-react";
-import { Booking } from "@shared/schema";
-import { format } from "date-fns";
+
+interface Activity {
+  id: string;
+  name: string;
+  type: 'sightseeing' | 'dining' | 'shopping' | 'transport' | 'accommodation' | 'entertainment' | 'cultural' | 'adventure';
+  location: string;
+  time: string;
+  duration?: string;
+  priority: 'low' | 'medium' | 'high';
+  notes?: string;
+  price?: number;
+  completed: boolean;
+}
 
 interface TravelDay {
   id: string;
@@ -67,33 +61,17 @@ interface TravelDay {
   };
 }
 
-interface Activity {
-  id: string;
-  name: string;
-  type: 'sightseeing' | 'dining' | 'shopping' | 'transport' | 'accommodation' | 'entertainment' | 'cultural' | 'adventure';
-  location: string;
-  time: string;
-  duration?: string;
-  priority: 'high' | 'medium' | 'low';
-  notes?: string;
-  price?: number;
-  completed?: boolean;
-}
-
 interface TripPlan {
   destination: string;
+  travelers: number;
   startDate?: Date;
   endDate?: Date;
-  travelers: number;
   budget?: number;
   days: TravelDay[];
   notes?: string;
 }
 
-const MyTrips = () => {
-  const [expandedTrip, setExpandedTrip] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState("existing");
-  
+const TravelPlanner = () => {
   // Trip Planning State
   const [tripPlan, setTripPlan] = useState<TripPlan>({
     destination: '',
@@ -110,18 +88,6 @@ const MyTrips = () => {
     priority: 'medium',
     notes: ''
   });
-
-  // Fetch existing bookings
-  const { data: bookings, isLoading } = useQuery<Booking[]>({
-    queryKey: ['/api/bookings']
-  });
-
-  const upcomingTrips = bookings?.filter(booking => new Date(booking.startDate) > new Date()) || [];
-  const pastTrips = bookings?.filter(booking => new Date(booking.endDate) < new Date()) || [];
-  
-  const toggleExpandTrip = (id: number) => {
-    setExpandedTrip(expandedTrip === id ? null : id);
-  };
 
   const activityTypes = [
     { value: 'sightseeing', label: 'Sightseeing', icon: Camera },
@@ -200,443 +166,291 @@ const MyTrips = () => {
     }));
   };
 
-  const getActivityIcon = (type: string) => {
-    const activityType = activityTypes.find(t => t.value === type);
-    return activityType?.icon || Camera;
+  const toggleActivityComplete = (dayId: string, activityId: string) => {
+    setTripPlan(prev => ({
+      ...prev,
+      days: prev.days.map(day => 
+        day.id === dayId 
+          ? { 
+              ...day, 
+              activities: day.activities.map(a => 
+                a.id === activityId ? { ...a, completed: !a.completed } : a
+              )
+            }
+          : day
+      )
+    }));
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'high': return 'bg-red-100 text-red-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const getActivityIcon = (type: string) => {
+    const activityType = activityTypes.find(t => t.value === type);
+    const IconComponent = activityType?.icon || Star;
+    return <IconComponent className="w-4 h-4" />;
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <Helmet>
-        <title>My Trips - Southeast Asia Explorer</title>
-        <meta name="description" content="Plan new trips and manage your existing travel bookings across Southeast Asia destinations." />
+        <title>Trip Planner - Southeast Asia Explorer</title>
+        <meta name="description" content="Plan your perfect Southeast Asian adventure with our comprehensive trip planning tool." />
       </Helmet>
       
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">My Trips</h1>
-        <Button onClick={() => setActiveTab("planner")}>
-          <PlusCircle className="w-4 h-4 mr-2" />
-          Plan New Trip
-        </Button>
+        <h1 className="text-3xl font-bold">Trip Planner</h1>
       </div>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6 w-full md:w-auto">
-          <TabsTrigger value="existing" className="flex-1 md:flex-initial">My Bookings</TabsTrigger>
-          <TabsTrigger value="planner" className="flex-1 md:flex-initial">Trip Planner</TabsTrigger>
-        </TabsList>
-        
-        {/* Existing Trips */}
-        <TabsContent value="existing">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Upcoming Trips</h2>
-              {isLoading ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : upcomingTrips.length > 0 ? (
-                <div className="space-y-4">
-                  {upcomingTrips.map((trip) => (
-                    <Card key={trip.id} className="overflow-hidden">
-                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 pb-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-xl">{trip.name}</CardTitle>
-                            <div className="flex items-center text-neutral-600 mt-2">
-                              <Calendar className="h-4 w-4 mr-2" />
-                              <span>
-                                {format(new Date(trip.startDate), 'MMM d, yyyy')} - {format(new Date(trip.endDate), 'MMM d, yyyy')}
-                              </span>
-                            </div>
-                            <div className="flex items-center text-neutral-600 mt-1">
-                              <MapPin className="h-4 w-4 mr-2" />
-                              <span>{trip.destination}</span>
-                            </div>
-                          </div>
-                          <Button variant="ghost" onClick={() => toggleExpandTrip(trip.id)}>
-                            {expandedTrip === trip.id ? <ChevronUp /> : <ChevronDown />}
-                          </Button>
-                        </div>
-                      </CardHeader>
-                      
-                      {expandedTrip === trip.id && (
-                        <CardContent className="pt-6">
-                          <div className="space-y-4">
-                            {trip.itinerary?.map((day: any, index: number) => (
-                              <div key={index} className="border border-neutral-100 rounded-lg p-4">
-                                <div className="flex items-center justify-between mb-3">
-                                  <div className="flex items-center">
-                                    <span className="text-sm font-semibold bg-primary text-white px-2 py-1 rounded-full">
-                                      Day {index + 1}
-                                    </span>
-                                    <span className="ml-3 font-medium">
-                                      {format(new Date(day.date), 'MMM d, yyyy')}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="space-y-2">
-                                  {day.activities?.map((activity: any, actIndex: number) => (
-                                    <div key={actIndex} className="flex items-center text-sm text-neutral-600">
-                                      <Clock className="w-3 h-3 mr-2" />
-                                      <span className="font-medium mr-2">{activity.time}</span>
-                                      <span>{activity.name}</span>
-                                      {activity.location && (
-                                        <span className="text-neutral-500 ml-2">at {activity.location}</span>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="text-center py-12">
-                  <CardContent>
-                    <PlaneTakeoff className="h-12 w-12 mx-auto mb-4 text-neutral-400" />
-                    <h3 className="text-lg font-medium mb-2">No upcoming trips</h3>
-                    <p className="text-neutral-600 mb-4">Start planning your next Southeast Asian adventure!</p>
-                    <Button onClick={() => setActiveTab("planner")}>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Plan Your First Trip
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-
-            {pastTrips.length > 0 && (
+      {/* Trip Planning Interface */}
+      <div className="space-y-6">
+        {/* Trip Details */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Trip Details</CardTitle>
+            <CardDescription>Plan your perfect Southeast Asian adventure</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Past Trips</h2>
-                <div className="space-y-4">
-                  {pastTrips.map((trip) => (
-                    <Card key={trip.id} className="opacity-75">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-lg">{trip.name}</CardTitle>
-                            <div className="flex items-center text-neutral-600 mt-2">
-                              <Calendar className="h-4 w-4 mr-2" />
-                              <span>
-                                {format(new Date(trip.startDate), 'MMM d, yyyy')} - {format(new Date(trip.endDate), 'MMM d, yyyy')}
-                              </span>
-                            </div>
-                          </div>
-                          <Badge variant="secondary">Completed</Badge>
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
+                <label className="block text-sm font-medium mb-1">Destination</label>
+                <Input
+                  placeholder="Bangkok, Thailand"
+                  value={tripPlan.destination}
+                  onChange={(e) => setTripPlan(prev => ({ ...prev, destination: e.target.value }))}
+                />
               </div>
-            )}
-          </div>
-        </TabsContent>
-        
-        {/* Trip Planner */}
-        <TabsContent value="planner">
-          <div className="space-y-6">
-            {/* Trip Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Trip Details</CardTitle>
-                <CardDescription>Plan your perfect Southeast Asian adventure</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Destination</label>
-                    <Input
-                      placeholder="Bangkok, Thailand"
-                      value={tripPlan.destination}
-                      onChange={(e) => setTripPlan(prev => ({ ...prev, destination: e.target.value }))}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Number of Travelers</label>
-                    <Select 
-                      value={tripPlan.travelers.toString()} 
-                      onValueChange={(value) => setTripPlan(prev => ({ ...prev, travelers: parseInt(value) }))}
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Number of Travelers</label>
+                <Select 
+                  value={tripPlan.travelers.toString()} 
+                  onValueChange={(value) => setTripPlan(prev => ({ ...prev, travelers: parseInt(value) }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num} {num === 1 ? 'Traveler' : 'Travelers'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Start Date</label>
+                <Input
+                  type="date"
+                  value={tripPlan.startDate ? tripPlan.startDate.toISOString().split('T')[0] : ''}
+                  onChange={(e) => setTripPlan(prev => ({ ...prev, startDate: e.target.value ? new Date(e.target.value) : undefined }))}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">End Date</label>
+                <Input
+                  type="date"
+                  value={tripPlan.endDate ? tripPlan.endDate.toISOString().split('T')[0] : ''}
+                  onChange={(e) => setTripPlan(prev => ({ ...prev, endDate: e.target.value ? new Date(e.target.value) : undefined }))}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Budget (USD)</label>
+                <Input
+                  type="number"
+                  placeholder="1500"
+                  value={tripPlan.budget || ''}
+                  onChange={(e) => setTripPlan(prev => ({ ...prev, budget: parseInt(e.target.value) || undefined }))}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Notes</label>
+              <Textarea
+                placeholder="Special preferences, dietary restrictions, etc."
+                value={tripPlan.notes || ''}
+                onChange={(e) => setTripPlan(prev => ({ ...prev, notes: e.target.value }))}
+                rows={3}
+              />
+            </div>
+            
+            <Button onClick={generateDays} className="w-full">
+              <Calendar className="w-4 h-4 mr-2" />
+              Generate Daily Schedule
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Daily Itinerary */}
+        {tripPlan.days.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">Daily Itinerary</h2>
+            {tripPlan.days.map((day, index) => (
+              <Card key={day.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle className="flex items-center">
+                        <Calendar className="w-5 h-5 mr-2" />
+                        Day {index + 1} - {day.date.toLocaleDateString()}
+                      </CardTitle>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setCurrentEditDay(currentEditDay === day.id ? null : day.id)}
                     >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                          <SelectItem key={num} value={num.toString()}>
-                            {num} {num === 1 ? 'Traveler' : 'Travelers'}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Start Date</label>
-                    <DatePicker
-                      selected={tripPlan.startDate}
-                      onSelect={(date) => setTripPlan(prev => ({ ...prev, startDate: date }))}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">End Date</label>
-                    <DatePicker
-                      selected={tripPlan.endDate}
-                      onSelect={(date) => setTripPlan(prev => ({ ...prev, endDate: date }))}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Budget (USD)</label>
-                    <Input
-                      type="number"
-                      placeholder="1500"
-                      value={tripPlan.budget || ''}
-                      onChange={(e) => setTripPlan(prev => ({ ...prev, budget: parseInt(e.target.value) || undefined }))}
-                    />
-                  </div>
-                  
-                  <div className="md:col-span-2">
-                    <Button onClick={generateDays} disabled={!tripPlan.startDate || !tripPlan.endDate}>
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Generate Itinerary Days
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Activity
                     </Button>
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Trip Notes</label>
-                  <Textarea
-                    placeholder="Special preferences, dietary restrictions, mobility needs..."
-                    value={tripPlan.notes || ''}
-                    onChange={(e) => setTripPlan(prev => ({ ...prev, notes: e.target.value }))}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Daily Itinerary */}
-            {tripPlan.days.length > 0 && (
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Daily Itinerary</h2>
-                {tripPlan.days.map((day, index) => (
-                  <Card key={day.id}>
-                    <CardHeader>
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle className="text-lg">
-                            Day {index + 1} - {format(day.date, 'EEEE, MMM d, yyyy')}
-                          </CardTitle>
-                          <CardDescription>
-                            {day.activities.length} {day.activities.length === 1 ? 'activity' : 'activities'} planned
-                          </CardDescription>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCurrentEditDay(currentEditDay === day.id ? null : day.id)}
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Activity
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    
-                    <CardContent>
-                      <div className="space-y-3">
-                        {day.activities.map((activity) => {
-                          const ActivityIcon = getActivityIcon(activity.type);
-                          return (
-                            <div key={activity.id} className="flex items-start justify-between p-3 bg-neutral-50 rounded-lg">
-                              <div className="flex items-start space-x-3">
-                                <ActivityIcon className="w-5 h-5 text-primary mt-0.5" />
-                                <div className="flex-1">
-                                  <div className="flex items-center space-x-2">
-                                    <h4 className="font-medium">{activity.name}</h4>
-                                    <Badge variant="outline" className={getPriorityColor(activity.priority)}>
-                                      {activity.priority}
-                                    </Badge>
-                                  </div>
-                                  <div className="flex items-center text-sm text-neutral-600 mt-1">
-                                    <MapPin className="w-3 h-3 mr-1" />
-                                    <span>{activity.location}</span>
-                                    {activity.time && (
-                                      <>
-                                        <Clock className="w-3 h-3 ml-3 mr-1" />
-                                        <span>{activity.time}</span>
-                                      </>
-                                    )}
-                                    {activity.duration && (
-                                      <span className="ml-2">({activity.duration})</span>
-                                    )}
-                                    {activity.price && (
-                                      <span className="font-medium text-primary ml-2">
-                                        ${activity.price}
-                                      </span>
-                                    )}
-                                  </div>
-                                  {activity.notes && (
-                                    <p className="text-sm text-neutral-600 mt-1">{activity.notes}</p>
-                                  )}
-                                </div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeActivity(day.id, activity.id)}
-                              >
-                                <Trash2 className="h-4 w-4 text-red-500" />
-                              </Button>
-                            </div>
-                          );
-                        })}
-                        
-                        {day.activities.length === 0 && (
-                          <div className="text-center py-8 text-neutral-500">
-                            <Calendar className="h-12 w-12 mx-auto mb-2 opacity-30" />
-                            <p>No activities planned for this day</p>
-                            <p className="text-sm">Click "Add Activity" to get started</p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Add Activity Form */}
-                      {currentEditDay === day.id && (
-                        <div className="mt-6 p-4 bg-white border rounded-lg">
-                          <h4 className="font-medium mb-4">Add New Activity</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Activity Name</label>
-                              <Input
-                                placeholder="Visit Temple, Lunch at..."
-                                value={newActivity.name}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, name: e.target.value }))}
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Type</label>
-                              <Select 
-                                value={newActivity.type} 
-                                onValueChange={(value) => setNewActivity(prev => ({ ...prev, type: value as Activity['type'] }))}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {activityTypes.map((type) => (
-                                    <SelectItem key={type.value} value={type.value}>
-                                      {type.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Location</label>
-                              <Input
-                                placeholder="Grand Palace, Chatuchak Market..."
-                                value={newActivity.location}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, location: e.target.value }))}
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Time</label>
-                              <Input
-                                type="time"
-                                value={newActivity.time}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, time: e.target.value }))}
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Duration</label>
-                              <Input
-                                placeholder="2 hours, Half day..."
-                                value={newActivity.duration}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, duration: e.target.value }))}
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Priority</label>
-                              <Select 
-                                value={newActivity.priority} 
-                                onValueChange={(value) => setNewActivity(prev => ({ ...prev, priority: value as Activity['priority'] }))}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="high">High Priority</SelectItem>
-                                  <SelectItem value="medium">Medium Priority</SelectItem>
-                                  <SelectItem value="low">Low Priority</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Estimated Cost (USD)</label>
-                              <Input
-                                type="number"
-                                placeholder="25"
-                                value={newActivity.price || ''}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, price: parseInt(e.target.value) || undefined }))}
-                              />
-                            </div>
-                            
-                            <div className="md:col-span-2">
-                              <label className="block text-sm font-medium mb-1">Notes</label>
-                              <Textarea
-                                placeholder="Additional details, booking info, tips..."
-                                value={newActivity.notes}
-                                onChange={(e) => setNewActivity(prev => ({ ...prev, notes: e.target.value }))}
-                              />
-                            </div>
+                </CardHeader>
+                <CardContent>
+                  {/* Activities */}
+                  <div className="space-y-3">
+                    {day.activities.map((activity) => (
+                      <div key={activity.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleActivityComplete(day.id, activity.id)}
+                            className={activity.completed ? 'text-green-600' : 'text-gray-400'}
+                          >
+                            <CheckCircle2 className="w-4 h-4" />
+                          </Button>
+                          
+                          <div className="flex items-center space-x-2">
+                            {getActivityIcon(activity.type)}
+                            <span className={activity.completed ? 'line-through text-gray-500' : ''}>
+                              {activity.name}
+                            </span>
                           </div>
                           
-                          <div className="flex space-x-2 mt-4">
-                            <Button 
-                              onClick={() => addActivity(day.id)}
-                              disabled={!newActivity.name || !newActivity.location}
-                            >
-                              <Plus className="w-4 h-4 mr-2" />
-                              Add Activity
-                            </Button>
-                            <Button variant="outline" onClick={() => setCurrentEditDay(null)}>
-                              Cancel
-                            </Button>
+                          <Badge variant="outline" className={getPriorityColor(activity.priority)}>
+                            {activity.priority}
+                          </Badge>
+                          
+                          {activity.time && (
+                            <div className="flex items-center text-sm text-gray-500">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {activity.time}
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center text-sm text-gray-500">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {activity.location}
                           </div>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeActivity(day.id, activity.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Add Activity Form */}
+                  {currentEditDay === day.id && (
+                    <div className="mt-4 p-4 border-t space-y-3">
+                      <h4 className="font-medium">Add New Activity</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <Input
+                          placeholder="Activity name"
+                          value={newActivity.name || ''}
+                          onChange={(e) => setNewActivity(prev => ({ ...prev, name: e.target.value }))}
+                        />
+                        
+                        <Select
+                          value={newActivity.type}
+                          onValueChange={(value) => setNewActivity(prev => ({ ...prev, type: value as Activity['type'] }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {activityTypes.map(type => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        
+                        <Input
+                          placeholder="Location"
+                          value={newActivity.location || ''}
+                          onChange={(e) => setNewActivity(prev => ({ ...prev, location: e.target.value }))}
+                        />
+                        
+                        <Input
+                          type="time"
+                          value={newActivity.time || ''}
+                          onChange={(e) => setNewActivity(prev => ({ ...prev, time: e.target.value }))}
+                        />
+                        
+                        <Input
+                          placeholder="Duration (e.g., 2 hours)"
+                          value={newActivity.duration || ''}
+                          onChange={(e) => setNewActivity(prev => ({ ...prev, duration: e.target.value }))}
+                        />
+                        
+                        <Select
+                          value={newActivity.priority}
+                          onValueChange={(value) => setNewActivity(prev => ({ ...prev, priority: value as Activity['priority'] }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low Priority</SelectItem>
+                            <SelectItem value="medium">Medium Priority</SelectItem>
+                            <SelectItem value="high">High Priority</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <Textarea
+                        placeholder="Notes (optional)"
+                        value={newActivity.notes || ''}
+                        onChange={(e) => setNewActivity(prev => ({ ...prev, notes: e.target.value }))}
+                        rows={2}
+                      />
+                      
+                      <div className="flex space-x-2">
+                        <Button onClick={() => addActivity(day.id)}>
+                          Add Activity
+                        </Button>
+                        <Button variant="outline" onClick={() => setCurrentEditDay(null)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </div>
   );
 };
 
-export default MyTrips;
+export default TravelPlanner;
