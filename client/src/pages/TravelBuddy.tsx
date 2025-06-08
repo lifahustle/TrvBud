@@ -71,7 +71,7 @@ export default function TravelBuddy() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      content: "Hi! I'm Barry, your TrvBUD AI assistant. I can help you plan your Southeast Asian adventure, find the best deals, recommend destinations, and answer any travel questions you have. What would you like to explore today?",
+      content: "Hi! I'm Bruce, your TrvBUD AI assistant. I can help you plan your Southeast Asian adventure, find the best deals, recommend destinations, and answer any travel questions you have. What would you like to explore today?",
       role: 'assistant',
       timestamp: new Date()
     }
@@ -173,7 +173,7 @@ export default function TravelBuddy() {
               <Bot className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Barry - TrvBUD Assistant
+              Bruce - TrvBUD Assistant
             </h1>
           </div>
           <p className="text-muted-foreground">
@@ -201,7 +201,7 @@ export default function TravelBuddy() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-lg">TrvBUD Assistant</CardTitle>
+                <CardTitle className="text-lg">Bruce - TrvBUD Assistant</CardTitle>
                 <p className="text-xs text-muted-foreground">Online • Ready to help</p>
               </div>
             </div>
@@ -241,7 +241,7 @@ export default function TravelBuddy() {
                         {message.isTyping ? (
                           <div className="flex items-center gap-2">
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            <span className="text-sm">TrvBUD is thinking...</span>
+                            <span className="text-sm">Bruce is thinking...</span>
                           </div>
                         ) : (
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -315,7 +315,7 @@ export default function TravelBuddy() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2 text-center">
-                TrvBUD AI can help with travel planning, recommendations, and Southeast Asian destinations
+                Bruce can help with travel planning, recommendations, and Southeast Asian destinations
               </p>
             </div>
           </CardContent>
