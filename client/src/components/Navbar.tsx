@@ -36,10 +36,10 @@ const Navbar = () => {
   ];
 
   const exploreMenuItems = [
-    { name: "Latest Deals", path: "/", icon: DollarSign },
+    { name: "Deals", path: "/", icon: DollarSign },
     { name: "Flights", path: "/flights", icon: Plane },
     { name: "Stays", path: "/stays", icon: Bed },
-    { name: "Transport", path: "/transport", icon: Car },
+    { name: "Rides", path: "/transport", icon: Car },
   ];
 
   const getMembershipIcon = (tier: string) => {
