@@ -18,7 +18,6 @@ const Navbar = () => {
   });
 
   const navLinks = [
-    { name: "Explore", path: "/" },
     { name: "Stays", path: "/stays" },
     { name: "My Trips", path: "/my-trips" },
     { name: "Buddy", path: "/travel-buddy" },
@@ -29,7 +28,8 @@ const Navbar = () => {
     { name: "Reviews", path: "/reviews" },
   ];
 
-  const travelMenuItems = [
+  const exploreMenuItems = [
+    { name: "Home", path: "/", icon: Compass },
     { name: "Flights", path: "/flights", icon: Plane },
     { name: "Transport", path: "/transport", icon: Car },
     { name: "Bookings", path: "/booking-manager", icon: Calendar },
@@ -77,18 +77,18 @@ const Navbar = () => {
                 </Link>
               ))}
               
-              {/* Travel Dropdown */}
+              {/* Let's Go Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger className={`${
-                  travelMenuItems.some(item => location === item.path)
+                  exploreMenuItems.some(item => location === item.path)
                     ? "border-primary text-primary"
                     : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
                 } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}>
-                  Travel
+                  Let's Go!
                   <ChevronDown className="w-3 h-3 ml-1" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
-                  {travelMenuItems.map((item) => {
+                  {exploreMenuItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <DropdownMenuItem key={item.path} asChild>
@@ -221,12 +221,12 @@ const Navbar = () => {
               </Link>
             ))}
             
-            {/* Travel section in mobile */}
+            {/* Let's Go section in mobile */}
             <div className="border-t border-neutral-200 mt-2 pt-2">
               <div className="px-3 pb-2">
-                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Travel</p>
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Let's Go!</p>
               </div>
-              {travelMenuItems.map((item) => {
+              {exploreMenuItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <Link
