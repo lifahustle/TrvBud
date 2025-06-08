@@ -5,6 +5,13 @@ import {
   type UserSession,
   type MembershipBenefit,
   type PointsHistory,
+  type Review,
+  type InsertReview,
+  type ReviewHelpfulness,
+  type FavoriteTrip,
+  type InsertFavoriteTrip,
+  type SavedItinerary,
+  type InsertSavedItinerary,
   type Destination, 
   type Accommodation, 
   type Transport, 
@@ -71,6 +78,27 @@ export interface IStorage {
 
   // Itinerary template for the builder
   getItineraryTemplate(): Promise<any>;
+
+  // Reviews operations
+  createReview(userId: number, review: InsertReview): Promise<Review>;
+  getReviewsByItem(itemType: string, itemId: number): Promise<Review[]>;
+  getReviewsByUser(userId: number): Promise<Review[]>;
+  updateReviewHelpfulness(userId: number, reviewId: number, isHelpful: boolean): Promise<void>;
+  getReviewStats(itemType: string, itemId: number): Promise<{ averageRating: number; totalReviews: number; ratingBreakdown: number[] }>;
+
+  // Favorites operations
+  addFavorite(userId: number, favorite: InsertFavoriteTrip): Promise<FavoriteTrip>;
+  removeFavorite(userId: number, itemType: string, itemId: number): Promise<void>;
+  getFavorites(userId: number): Promise<FavoriteTrip[]>;
+  isFavorite(userId: number, itemType: string, itemId: number): Promise<boolean>;
+
+  // Saved itineraries operations
+  saveItinerary(userId: number, itinerary: InsertSavedItinerary): Promise<SavedItinerary>;
+  getSavedItineraries(userId: number): Promise<SavedItinerary[]>;
+  getPublicItineraries(): Promise<SavedItinerary[]>;
+  updateItinerary(userId: number, id: number, updates: Partial<SavedItinerary>): Promise<SavedItinerary>;
+  deleteItinerary(userId: number, id: number): Promise<void>;
+  likeItinerary(userId: number, id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {

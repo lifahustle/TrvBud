@@ -21,6 +21,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Membership from "./pages/Membership";
 import Profile from "./pages/Profile";
+import Reviews from "./pages/Reviews";
+import Favorites from "./pages/Favorites";
 
 function Router() {
   return (
@@ -41,6 +43,8 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/membership" component={Membership} />
       <Route path="/profile" component={Profile} />
+      <Route path="/reviews" component={Reviews} />
+      <Route path="/favorites" component={Favorites} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

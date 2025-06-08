@@ -161,6 +161,229 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reviews routes
+  app.post("/api/reviews", requireAuth, async (req, res) => {
+    try {
+      const reviewData = req.body;
+      const review = await storage.createReview(req.session.userId, reviewData);
+      await storage.addPoints(req.session.userId, 25, 'review_posted', 'Posted a review');
+      res.status(201).json(review);
+    } catch (error) {
+      console.error("Create review error:", error);
+      res.status(500).json({ message: "Failed to create review" });
+    }
+  });
+
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const { itemType, itemId, userId } = req.query;
+      
+      let reviews = [];
+      if (itemType && itemId) {
+        reviews = await storage.getReviewsByItem(itemType as string, parseInt(itemId as string));
+      } else if (userId) {
+        reviews = await storage.getReviewsByUser(parseInt(userId as string));
+      } else {
+        // Return all reviews with mock data for demo
+        reviews = [
+          {
+            id: 1,
+            userId: 1,
+            itemType: "accommodation",
+            itemId: 1,
+            rating: 5,
+            title: "Amazing stay with great service",
+            content: "The hotel exceeded all expectations. The staff was incredibly friendly and the rooms were spotless. The location was perfect for exploring the city.",
+            photos: [],
+            isVerified: true,
+            helpfulCount: 12,
+            reportCount: 0,
+            response: "Thank you for your wonderful review! We're delighted you enjoyed your stay.",
+            responseDate: "2024-01-15",
+            createdAt: "2024-01-10",
+            updatedAt: "2024-01-10",
+            user: {
+              firstName: "Sarah",
+              lastName: "Johnson",
+              profileImage: null,
+              membershipTier: "premium"
+            },
+            item: {
+              name: "Four Seasons Resort",
+              location: "Bali, Indonesia",
+              type: "accommodation"
+            }
+          },
+          {
+            id: 2,
+            userId: 2,
+            itemType: "transport",
+            itemId: 1,
+            rating: 4,
+            title: "Reliable and comfortable ride",
+            content: "The car was clean and the driver was professional. Pickup was on time and the journey was smooth.",
+            photos: [],
+            isVerified: false,
+            helpfulCount: 8,
+            reportCount: 0,
+            createdAt: "2024-01-08",
+            updatedAt: "2024-01-08",
+            user: {
+              firstName: "Mike",
+              lastName: "Chen",
+              profileImage: null,
+              membershipTier: "adventurer"
+            },
+            item: {
+              name: "Sedan Car Rental",
+              location: "Bangkok, Thailand",
+              type: "transport"
+            }
+          }
+        ];
+      }
+      
+      res.json(reviews);
+    } catch (error) {
+      console.error("Get reviews error:", error);
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  app.post("/api/reviews/:reviewId/helpful", requireAuth, async (req, res) => {
+    try {
+      const { reviewId } = req.params;
+      const { isHelpful } = req.body;
+      await storage.updateReviewHelpfulness(req.session.userId, parseInt(reviewId), isHelpful);
+      res.json({ message: "Review helpfulness updated" });
+    } catch (error) {
+      console.error("Review helpfulness error:", error);
+      res.status(500).json({ message: "Failed to update review helpfulness" });
+    }
+  });
+
+  app.get("/api/reviews/stats/:itemType/:itemId", async (req, res) => {
+    try {
+      const { itemType, itemId } = req.params;
+      const stats = await storage.getReviewStats(itemType, parseInt(itemId));
+      res.json(stats);
+    } catch (error) {
+      console.error("Review stats error:", error);
+      res.status(500).json({ message: "Failed to fetch review stats" });
+    }
+  });
+
+  // Favorites routes
+  app.post("/api/favorites", requireAuth, async (req, res) => {
+    try {
+      const favoriteData = req.body;
+      const favorite = await storage.addFavorite(req.session.userId, favoriteData);
+      res.status(201).json(favorite);
+    } catch (error) {
+      console.error("Add favorite error:", error);
+      res.status(500).json({ message: "Failed to add favorite" });
+    }
+  });
+
+  app.get("/api/favorites", requireAuth, async (req, res) => {
+    try {
+      const favorites = await storage.getFavorites(req.session.userId);
+      res.json(favorites);
+    } catch (error) {
+      console.error("Get favorites error:", error);
+      res.status(500).json({ message: "Failed to fetch favorites" });
+    }
+  });
+
+  app.delete("/api/favorites/:itemType/:itemId", requireAuth, async (req, res) => {
+    try {
+      const { itemType, itemId } = req.params;
+      await storage.removeFavorite(req.session.userId, itemType, parseInt(itemId));
+      res.json({ message: "Favorite removed" });
+    } catch (error) {
+      console.error("Remove favorite error:", error);
+      res.status(500).json({ message: "Failed to remove favorite" });
+    }
+  });
+
+  app.get("/api/favorites/check/:itemType/:itemId", requireAuth, async (req, res) => {
+    try {
+      const { itemType, itemId } = req.params;
+      const isFavorite = await storage.isFavorite(req.session.userId, itemType, parseInt(itemId));
+      res.json({ isFavorite });
+    } catch (error) {
+      console.error("Check favorite error:", error);
+      res.status(500).json({ message: "Failed to check favorite status" });
+    }
+  });
+
+  // Saved itineraries routes
+  app.post("/api/itineraries", requireAuth, async (req, res) => {
+    try {
+      const itineraryData = req.body;
+      const itinerary = await storage.saveItinerary(req.session.userId, itineraryData);
+      await storage.addPoints(req.session.userId, 50, 'itinerary_created', 'Created a new itinerary');
+      res.status(201).json(itinerary);
+    } catch (error) {
+      console.error("Save itinerary error:", error);
+      res.status(500).json({ message: "Failed to save itinerary" });
+    }
+  });
+
+  app.get("/api/itineraries/saved", requireAuth, async (req, res) => {
+    try {
+      const itineraries = await storage.getSavedItineraries(req.session.userId);
+      res.json(itineraries);
+    } catch (error) {
+      console.error("Get saved itineraries error:", error);
+      res.status(500).json({ message: "Failed to fetch saved itineraries" });
+    }
+  });
+
+  app.get("/api/itineraries/public", async (req, res) => {
+    try {
+      const itineraries = await storage.getPublicItineraries();
+      res.json(itineraries);
+    } catch (error) {
+      console.error("Get public itineraries error:", error);
+      res.status(500).json({ message: "Failed to fetch public itineraries" });
+    }
+  });
+
+  app.patch("/api/itineraries/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const itinerary = await storage.updateItinerary(req.session.userId, parseInt(id), updates);
+      res.json(itinerary);
+    } catch (error) {
+      console.error("Update itinerary error:", error);
+      res.status(500).json({ message: "Failed to update itinerary" });
+    }
+  });
+
+  app.delete("/api/itineraries/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteItinerary(req.session.userId, parseInt(id));
+      res.json({ message: "Itinerary deleted" });
+    } catch (error) {
+      console.error("Delete itinerary error:", error);
+      res.status(500).json({ message: "Failed to delete itinerary" });
+    }
+  });
+
+  app.post("/api/itineraries/:id/like", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.likeItinerary(req.session.userId, parseInt(id));
+      res.json({ message: "Itinerary liked" });
+    } catch (error) {
+      console.error("Like itinerary error:", error);
+      res.status(500).json({ message: "Failed to like itinerary" });
+    }
+  });
+
   // Destinations API
   app.get("/api/destinations", async (_req, res) => {
     try {
