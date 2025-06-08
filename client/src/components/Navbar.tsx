@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Menu, Bell, User, Plane, Crown, Star, Compass, LogOut, Settings, ChevronDown, Car, Calendar } from "lucide-react";
+import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -29,7 +29,7 @@ const Navbar = () => {
   ];
 
   const exploreMenuItems = [
-    { name: "Latest Deals", path: "/", icon: Compass },
+    { name: "Latest Deals", path: "/", icon: DollarSign },
     { name: "Flights", path: "/flights", icon: Plane },
     { name: "Transport", path: "/transport", icon: Car },
     { name: "Bookings", path: "/booking-manager", icon: Calendar },
@@ -39,7 +39,7 @@ const Navbar = () => {
     switch (tier) {
       case "premium": return Crown;
       case "adventurer": return Star;
-      default: return Compass;
+      default: return User;
     }
   };
 
