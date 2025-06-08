@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
@@ -18,7 +19,8 @@ import {
   MapPin,
   CreditCard,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  ChevronDown
 } from "lucide-react";
 
 interface MembershipTier {
@@ -122,6 +124,7 @@ const membershipTiers: MembershipTier[] = [
 
 export default function Membership() {
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [expandedBenefits, setExpandedBenefits] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Get current user membership info
@@ -200,7 +203,7 @@ export default function Membership() {
         )}
 
         {/* Membership Tiers */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-12">
           {membershipTiers.map((tier) => {
             const Icon = tier.icon;
             const isCurrentTier = currentTier === tier.id;
@@ -230,56 +233,104 @@ export default function Membership() {
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent className="p-6">
-                  <div className="space-y-6">
-                    {/* Features */}
+                <CardContent className="p-4 sm:p-6">
+                  <div className="space-y-4 sm:space-y-6">
+                    {/* Features - Show first 3, then collapsible for rest */}
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500" />
                         Core Features
                       </h4>
                       <ul className="space-y-2">
-                        {tier.features.map((feature, index) => (
+                        {tier.features.slice(0, 3).map((feature, index) => (
                           <li key={index} className="flex items-center gap-2 text-sm">
                             <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                             {feature}
                           </li>
                         ))}
                       </ul>
+                      
+                      {tier.features.length > 3 && (
+                        <Collapsible 
+                          open={expandedBenefits === `${tier.id}-features`} 
+                          onOpenChange={(open) => setExpandedBenefits(open ? `${tier.id}-features` : null)}
+                        >
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="mt-2 p-0 h-auto text-xs text-muted-foreground hover:bg-transparent"
+                            >
+                              <div className="flex items-center gap-1">
+                                {expandedBenefits === `${tier.id}-features` ? 'Show less' : `+${tier.features.length - 3} more features`}
+                                <ChevronDown 
+                                  className={`w-3 h-3 transition-transform ${
+                                    expandedBenefits === `${tier.id}-features` ? 'rotate-180' : ''
+                                  }`} 
+                                />
+                              </div>
+                            </Button>
+                          </CollapsibleTrigger>
+                          
+                          <CollapsibleContent>
+                            <ul className="space-y-2 mt-2">
+                              {tier.features.slice(3).map((feature, index) => (
+                                <li key={index + 3} className="flex items-center gap-2 text-sm">
+                                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                                  {feature}
+                                </li>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      )}
                     </div>
 
-                    {/* Benefits */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Gift className="w-4 h-4 text-purple-500" />
-                        Member Benefits
-                      </h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="w-4 h-4 text-green-500" />
-                          {tier.benefits.discounts}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Star className="w-4 h-4 text-yellow-500" />
-                          {tier.benefits.points}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Heart className="w-4 h-4 text-red-500" />
-                          {tier.benefits.support}
-                        </div>
-                        {tier.benefits.extras.slice(0, 2).map((extra, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-blue-500" />
-                            {extra}
+                    {/* Benefits - Collapsible */}
+                    <Collapsible 
+                      open={expandedBenefits === tier.id} 
+                      onOpenChange={(open) => setExpandedBenefits(open ? tier.id : null)}
+                    >
+                      <CollapsibleTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-between p-0 h-auto font-semibold hover:bg-transparent"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Gift className="w-4 h-4 text-purple-500" />
+                            Member Benefits
                           </div>
-                        ))}
-                        {tier.benefits.extras.length > 2 && (
-                          <p className="text-xs text-muted-foreground">
-                            +{tier.benefits.extras.length - 2} more benefits
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                          <ChevronDown 
+                            className={`w-4 h-4 transition-transform ${
+                              expandedBenefits === tier.id ? 'rotate-180' : ''
+                            }`} 
+                          />
+                        </Button>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent className="mt-3">
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <CreditCard className="w-4 h-4 text-green-500" />
+                            {tier.benefits.discounts}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            {tier.benefits.points}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Heart className="w-4 h-4 text-red-500" />
+                            {tier.benefits.support}
+                          </div>
+                          {tier.benefits.extras.map((extra, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <Zap className="w-4 h-4 text-blue-500" />
+                              {extra}
+                            </div>
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
 
                     {/* Action Button */}
                     <div className="pt-4">
