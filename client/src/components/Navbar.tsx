@@ -1,10 +1,21 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, Bell, User, Plane, MapPin, DollarSign, FileText, MessageCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Menu, Bell, User, Plane, Crown, Star, Compass, LogOut, Settings } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check if user is authenticated
+  const { data: userProfile } = useQuery({
+    queryKey: ["/api/auth/profile"],
+    retry: false,
+  });
 
   const navLinks = [
     { name: "Explore", path: "/" },
@@ -20,6 +31,22 @@ const Navbar = () => {
     { name: "Translate", path: "/google-translate" },
     { name: "My Trips", path: "/my-trips" },
   ];
+
+  const getMembershipIcon = (tier: string) => {
+    switch (tier) {
+      case "premium": return Crown;
+      case "adventurer": return Star;
+      default: return Compass;
+    }
+  };
+
+  const getMembershipColor = (tier: string) => {
+    switch (tier) {
+      case "premium": return "from-amber-500 to-amber-600";
+      case "adventurer": return "from-purple-500 to-purple-600";
+      default: return "from-blue-500 to-blue-600";
+    }
+  };
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-40">

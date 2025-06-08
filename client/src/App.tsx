@@ -17,6 +17,10 @@ import TravelPlanner from "./pages/TravelPlanner";
 import TravelBuddy from "./pages/TravelBuddy";
 import BookingManager from "./pages/BookingManager";
 import TravelDocuments from "./pages/TravelDocuments";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Membership from "./pages/Membership";
+import Profile from "./pages/Profile";
 
 function Router() {
   return (
@@ -33,6 +37,10 @@ function Router() {
       <Route path="/booking-manager" component={BookingManager} />
       <Route path="/travel-documents" component={TravelDocuments} />
       <Route path="/my-trips" component={MyTrips} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/membership" component={Membership} />
+      <Route path="/profile" component={Profile} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
