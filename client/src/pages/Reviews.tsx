@@ -381,25 +381,23 @@ export default function Reviews() {
               Share your experiences and read reviews from other travelers
             </p>
           </div>
-          {userProfile && (
-            <Dialog open={showWriteReview} onOpenChange={setShowWriteReview}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Write Review
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Write a Review</DialogTitle>
-                  <DialogDescription>
-                    Share your experience to help other travelers make informed decisions
-                  </DialogDescription>
-                </DialogHeader>
-                <WriteReviewForm />
-              </DialogContent>
-            </Dialog>
-          )}
+          <Dialog open={showWriteReview} onOpenChange={setShowWriteReview}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Write Review
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Write a Review</DialogTitle>
+                <DialogDescription>
+                  Share your experience to help other travelers make informed decisions
+                </DialogDescription>
+              </DialogHeader>
+              <WriteReviewForm />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Filters and Search */}
@@ -450,12 +448,10 @@ export default function Reviews() {
                 <p className="text-muted-foreground mb-4">
                   Be the first to share your travel experience!
                 </p>
-                {userProfile && (
-                  <Button onClick={() => setShowWriteReview(true)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Write First Review
-                  </Button>
-                )}
+                <Button onClick={() => setShowWriteReview(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Write First Review
+                </Button>
               </CardContent>
             </Card>
           )}
