@@ -26,12 +26,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center cursor-pointer">
               <div className="bg-primary rounded-md p-1">
                 <Plane className="text-white w-5 h-5" />
               </div>
               <span className="ml-2 text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-poppins">Trv Bud</span>
-            </div>
+            </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navLinks.map((link) => (
                 <Link 
