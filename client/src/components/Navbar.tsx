@@ -28,7 +28,7 @@ const Navbar = () => {
       ]
     },
     { name: "Ai", path: "/travel-buddy" },
-    { name: "Docs", path: "/travel-documents" },
+    { name: <FileText className="w-4 h-4" />, path: "/travel-documents" },
     { name: "Wallet", path: "/money-management" },
     { name: "Visas", path: "/visas" },
     { name: <Languages className="w-4 h-4" />, path: "/google-translate" },
