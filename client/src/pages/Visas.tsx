@@ -186,6 +186,21 @@ const Visas = () => {
             "Proof of sufficient funds",
             "Travel insurance"
           ]
+        },
+        {
+          type: "Special Tourist Visa (STV)",
+          duration: "Up to 90 days (renewable twice, total stay up to 270 days)",
+          processingTime: "3-7 working days",
+          cost: "$65-100 USD",
+          requirements: [
+            "Valid passport with at least 12 months validity and blank visa pages",
+            "Completed visa application form",
+            "Recent passport-sized color photograph",
+            "Flight itinerary (round trip)",
+            "Proof of accommodation for entire stay",
+            "Travel insurance with COVID-19 coverage (minimum $100,000 USD)",
+            "Proof of sufficient funds"
+          ]
         }
       ],
       officialWebsite: "https://www.thaiembassy.com/thailand-visa/",
@@ -230,47 +245,7 @@ const Visas = () => {
       notes: "The Philippines offers visa-free entry to citizens of many countries for stays of up to 30 days. The eTravel system requires pre-registration before arrival.",
       eVisaAvailable: true,
       visaFreeCountries: ["Brunei", "Cambodia", "Indonesia", "Laos", "Malaysia", "Singapore", "Thailand", "Vietnam"]
-    },
-    {
-      country: "Thailand",
-      flagEmoji: "🇹🇭",
-      officialName: "Ministry of Foreign Affairs of the Kingdom of Thailand",
-      visaTypes: [
-        {
-          type: "Tourist Visa (TR)",
-          duration: "Single entry: up to 60 days (can be extended for 30 days); Multiple entry: up to 60 days per entry (valid for 6 months)",
-          processingTime: "2-5 working days",
-          cost: "$40-60 USD",
-          requirements: [
-            "Valid passport with at least 6 months validity and blank visa pages",
-            "Completed visa application form",
-            "Recent passport-sized color photograph",
-            "Flight itinerary (round trip)",
-            "Proof of accommodation",
-            "Proof of sufficient funds (20,000 THB per person, 40,000 THB per family)",
-            "Travel insurance with COVID-19 coverage (minimum $10,000 USD)"
-          ]
-        },
-        {
-          type: "Special Tourist Visa (STV)",
-          duration: "Up to 90 days (renewable twice, total stay up to 270 days)",
-          processingTime: "3-7 working days",
-          cost: "$65-100 USD",
-          requirements: [
-            "Valid passport with at least 12 months validity and blank visa pages",
-            "Completed visa application form",
-            "Recent passport-sized color photograph",
-            "Flight itinerary (round trip)",
-            "Proof of accommodation for entire stay",
-            "Travel insurance with COVID-19 coverage (minimum $100,000 USD)",
-            "Proof of sufficient funds"
-          ]
-        }
-      ],
-      officialWebsite: "https://www.thaiembassy.com/thailand-visa/",
-      notes: "Thailand offers visa exemptions for citizens of 57 countries for stays of 30-90 days. eVisa application is available for tourist and business visits.",
-      eVisaAvailable: true,
-      visaFreeCountries: ["United States", "Canada", "Australia", "United Kingdom", "European Union countries", "Japan", "South Korea", "Singapore", "Malaysia"]
+
     },
     {
       country: "Singapore",
