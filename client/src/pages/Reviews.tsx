@@ -75,10 +75,7 @@ export default function Reviews() {
     retry: false,
   });
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["/api/auth/profile"],
-    retry: false,
-  });
+  // Removed authentication requirement for reviews
 
   const { data: accommodations = [] } = useQuery({
     queryKey: ["/api/accommodations"],
@@ -192,7 +189,7 @@ export default function Reviews() {
         {formData.itemType && (
           <div>
             <label className="block text-sm font-medium mb-2">Select Service</label>
-            <Select value={formData.itemId.toString()} onValueChange={(value) => setFormData({ ...formData, itemId: parseInt(value) })}>
+            <Select value={formData.itemId > 0 ? formData.itemId.toString() : ""} onValueChange={(value) => setFormData({ ...formData, itemId: parseInt(value) })}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
