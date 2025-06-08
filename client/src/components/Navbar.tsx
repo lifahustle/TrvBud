@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Menu, Bell, User, Plane, Crown, Star, Compass, LogOut, Settings } from "lucide-react";
+import { Menu, Bell, User, Plane, Crown, Star, Compass, LogOut, Settings, ChevronDown, Car, Calendar } from "lucide-react";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -19,17 +19,20 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Explore", path: "/" },
-    { name: "Flights", path: "/flights" },
     { name: "Stays", path: "/stays" },
-    { name: "Transport", path: "/transport" },
     { name: "My Trips", path: "/my-trips" },
     { name: "Buddy", path: "/travel-buddy" },
-    { name: "Bookings", path: "/booking-manager" },
     { name: "Documents", path: "/travel-documents" },
     { name: "Wallet", path: "/money-management" },
     { name: "Visas", path: "/visas" },
     { name: "Translate", path: "/google-translate" },
     { name: "Reviews", path: "/reviews" },
+  ];
+
+  const travelMenuItems = [
+    { name: "Flights", path: "/flights", icon: Plane },
+    { name: "Transport", path: "/transport", icon: Car },
+    { name: "Bookings", path: "/booking-manager", icon: Calendar },
   ];
 
   const getMembershipIcon = (tier: string) => {
@@ -73,6 +76,31 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+              
+              {/* Travel Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className={`${
+                  travelMenuItems.some(item => location === item.path)
+                    ? "border-primary text-primary"
+                    : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
+                } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}>
+                  Travel
+                  <ChevronDown className="w-3 h-3 ml-1" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  {travelMenuItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <DropdownMenuItem key={item.path} asChild>
+                        <Link href={item.path} className="flex items-center w-full">
+                          <IconComponent className="w-4 h-4 mr-2" />
+                          {item.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -192,6 +220,31 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            
+            {/* Travel section in mobile */}
+            <div className="border-t border-neutral-200 mt-2 pt-2">
+              <div className="px-3 pb-2">
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Travel</p>
+              </div>
+              {travelMenuItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    href={item.path}
+                    className={`${
+                      location === item.path
+                        ? "bg-primary text-white"
+                        : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
+                    } flex items-center pl-6 pr-4 py-2 text-base font-medium`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <IconComponent className="w-4 h-4 mr-3" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
