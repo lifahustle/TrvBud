@@ -308,3 +308,108 @@ export const pointsHistory = pgTable("points_history", {
 });
 
 export type PointsHistory = typeof pointsHistory.$inferSelect;
+
+// Reviews and Ratings Tables
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  itemType: text("item_type").notNull(), // 'accommodation', 'transport', 'flight', 'service'
+  itemId: integer("item_id").notNull(),
+  rating: integer("rating").notNull(), // 1-5 stars
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  photos: text("photos").array().default([]),
+  isVerified: boolean("is_verified").default(false),
+  helpfulCount: integer("helpful_count").default(0),
+  reportCount: integer("report_count").default(0),
+  response: text("response"), // Business response
+  responseDate: timestamp("response_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertReviewSchema = createInsertSchema(reviews).pick({
+  itemType: true,
+  itemId: true,
+  rating: true,
+  title: true,
+  content: true,
+  photos: true,
+});
+
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type Review = typeof reviews.$inferSelect;
+
+// Review Helpfulness Table
+export const reviewHelpfulness = pgTable("review_helpfulness", {
+  id: serial("id").primaryKey(),
+  reviewId: integer("review_id").notNull(),
+  userId: integer("user_id").notNull(),
+  isHelpful: boolean("is_helpful").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ReviewHelpfulness = typeof reviewHelpfulness.$inferSelect;
+
+// Favorite Trips and Itineraries Tables
+export const favoriteTrips = pgTable("favorite_trips", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  itemType: text("item_type").notNull(), // 'destination', 'accommodation', 'itinerary', 'package'
+  itemId: integer("item_id").notNull(),
+  itemData: jsonb("item_data"), // Store trip/itinerary details
+  tags: text("tags").array().default([]),
+  notes: text("notes"),
+  isPublic: boolean("is_public").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertFavoriteTripSchema = createInsertSchema(favoriteTrips).pick({
+  itemType: true,
+  itemId: true,
+  itemData: true,
+  tags: true,
+  notes: true,
+  isPublic: true,
+});
+
+export type InsertFavoriteTrip = z.infer<typeof insertFavoriteTripSchema>;
+export type FavoriteTrip = typeof favoriteTrips.$inferSelect;
+
+// Saved Itineraries Table
+export const savedItineraries = pgTable("saved_itineraries", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  destination: text("destination").notNull(),
+  duration: integer("duration").notNull(), // days
+  budget: integer("budget"), // estimated budget
+  activities: jsonb("activities").notNull(),
+  accommodations: jsonb("accommodations"),
+  transport: jsonb("transport"),
+  isTemplate: boolean("is_template").default(false),
+  isPublic: boolean("is_public").default(false),
+  tags: text("tags").array().default([]),
+  likes: integer("likes").default(0),
+  views: integer("views").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSavedItinerarySchema = createInsertSchema(savedItineraries).pick({
+  name: true,
+  description: true,
+  destination: true,
+  duration: true,
+  budget: true,
+  activities: true,
+  accommodations: true,
+  transport: true,
+  isTemplate: true,
+  isPublic: true,
+  tags: true,
+});
+
+export type InsertSavedItinerary = z.infer<typeof insertSavedItinerarySchema>;
+export type SavedItinerary = typeof savedItineraries.$inferSelect;

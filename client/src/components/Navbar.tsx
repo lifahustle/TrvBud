@@ -29,6 +29,8 @@ const Navbar = () => {
     { name: "Wallet", path: "/money-management" },
     { name: "Visas", path: "/visas" },
     { name: "Translate", path: "/google-translate" },
+    { name: "Reviews", path: "/reviews" },
+    { name: "Favorites", path: "/favorites" },
     { name: "My Trips", path: "/my-trips" },
   ];
 
