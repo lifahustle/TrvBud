@@ -33,7 +33,8 @@ function Router() {
       <Route path="/money-management" component={MoneyManagement} />
       <Route path="/visas" component={Visas} />
       <Route path="/google-translate" component={GoogleTranslate} />
-      <Route path="/my-trips" component={TravelPlanner} />
+      <Route path="/my-trips" component={MyTrips} />
+      <Route path="/travel-planner" component={TravelPlanner} />
       <Route path="/travel-buddy" component={TravelBuddy} />
       <Route path="/booking-manager" component={BookingManager} />
       <Route path="/travel-documents" component={TravelDocuments} />
