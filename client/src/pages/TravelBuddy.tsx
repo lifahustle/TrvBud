@@ -78,6 +78,7 @@ export default function TravelBuddy() {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -86,8 +87,10 @@ export default function TravelBuddy() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (shouldAutoScroll) {
+      scrollToBottom();
+    }
+  }, [messages, shouldAutoScroll]);
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -124,6 +127,9 @@ export default function TravelBuddy() {
   const handleSendMessage = async (messageText?: string) => {
     const message = messageText || inputMessage.trim();
     if (!message) return;
+
+    // Enable auto-scroll for user interactions
+    setShouldAutoScroll(true);
 
     // Add user message
     const userMessage: ChatMessage = {
