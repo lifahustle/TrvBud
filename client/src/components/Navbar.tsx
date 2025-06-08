@@ -22,7 +22,7 @@ const Navbar = () => {
     { name: "Flights", path: "/flights" },
     { name: "Stays", path: "/stays" },
     { name: "Transport", path: "/transport" },
-    { name: "Planner", path: "/travel-planner" },
+    { name: "My Trips", path: "/my-trips" },
     { name: "Buddy", path: "/travel-buddy" },
     { name: "Bookings", path: "/booking-manager" },
     { name: "Documents", path: "/travel-documents" },
@@ -30,7 +30,6 @@ const Navbar = () => {
     { name: "Visas", path: "/visas" },
     { name: "Translate", path: "/google-translate" },
     { name: "Reviews", path: "/reviews" },
-    { name: "My Trips", path: "/my-trips" },
   ];
 
   const getMembershipIcon = (tier: string) => {
