@@ -105,7 +105,7 @@ const Navbar = () => {
                           location === link.path || link.dropdownItems?.some(item => location === item.path)
                             ? "border-primary text-primary"
                             : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
-                        } border-b-2 px-1 pt-1 text-sm font-medium nav-link flex items-center`}
+                        } border-b-2 px-1 pt-1 pb-1 text-sm font-medium nav-link flex items-center h-auto`}
                       >
                         {link.name} <ChevronDown className="w-3 h-3 ml-1" />
                       </Button>
