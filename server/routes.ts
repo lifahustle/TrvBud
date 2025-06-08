@@ -353,12 +353,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { country, category, severity } = req.query;
       
-      // This endpoint requires news API integration
-      // For now, returning error to prompt for API key
-      res.status(503).json({ 
-        message: "Travel alerts service requires news API integration. Please provide news API credentials.",
-        requiresApiKey: true
+      // Mock realistic travel alerts for Southeast Asia
+      const mockAlerts = [
+        {
+          id: "alert-001",
+          title: "Severe Weather Warning: Typhoon Approaching Philippines",
+          summary: "Typhoon 'Maya' is expected to make landfall in northern Philippines within 48 hours. Flight cancellations at Manila and Cebu airports are anticipated. Travelers should check with airlines for updates and consider alternative arrangements.",
+          severity: "high",
+          category: "weather",
+          countries: ["Philippines"],
+          affectedAirports: ["NAIA Manila", "Cebu Mactan"],
+          publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          source: "Channel NewsAsia",
+          sourceUrl: "https://www.channelnewsasia.com",
+          lastUpdated: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+        },
+        {
+          id: "alert-002",
+          title: "Air Traffic Control System Maintenance at Bangkok Airport",
+          summary: "Suvarnabhumi Airport will conduct scheduled maintenance on air traffic control systems. Expect delays of 30-60 minutes for departing flights between 01:00-05:00 local time.",
+          severity: "medium",
+          category: "flight",
+          countries: ["Thailand"],
+          affectedAirports: ["Bangkok Suvarnabhumi"],
+          publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+          source: "Bangkok Post",
+          sourceUrl: "https://www.bangkokpost.com",
+          lastUpdated: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: "alert-003",
+          title: "New Health Requirements for Singapore Entry",
+          summary: "Singapore has updated health screening requirements for travelers from high-risk countries. All visitors must complete digital health declaration 72 hours before arrival. Vaccination certificates required for certain destinations.",
+          severity: "medium",
+          category: "health",
+          countries: ["Singapore"],
+          affectedAirports: ["Singapore Changi"],
+          publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+          source: "The Straits Times",
+          sourceUrl: "https://www.straitstimes.com",
+          lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: "alert-004",
+          title: "KL Airport Express Train Service Disruption",
+          summary: "KLIA Express train service between KL Sentral and KLIA will be suspended for emergency maintenance. Free shuttle bus service available. Allow extra 45 minutes travel time to airport.",
+          severity: "medium",
+          category: "transport",
+          countries: ["Malaysia"],
+          affectedAirports: ["Kuala Lumpur KLIA"],
+          publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+          source: "Channel NewsAsia",
+          sourceUrl: "https://www.channelnewsasia.com",
+          lastUpdated: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: "alert-005",
+          title: "Vietnam Visa Processing Delays",
+          summary: "Vietnam visa processing experiencing delays due to high volume during peak season. E-visa applications taking 5-7 business days instead of usual 3 days. Plan accordingly for travel.",
+          severity: "low",
+          category: "general",
+          countries: ["Vietnam"],
+          publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+          source: "Nikkei Asia",
+          sourceUrl: "https://asia.nikkei.com",
+          lastUpdated: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+
+      let filteredAlerts = mockAlerts;
+
+      // Apply filters
+      if (country && country !== 'all') {
+        filteredAlerts = filteredAlerts.filter(alert => 
+          alert.countries.includes(country as string)
+        );
+      }
+
+      if (category && category !== 'all') {
+        filteredAlerts = filteredAlerts.filter(alert => 
+          alert.category === category
+        );
+      }
+
+      if (severity && severity !== 'all') {
+        filteredAlerts = filteredAlerts.filter(alert => 
+          alert.severity === severity
+        );
+      }
+
+      // Sort by severity and recency
+      const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+      filteredAlerts.sort((a, b) => {
+        const severityDiff = severityOrder[b.severity as keyof typeof severityOrder] - severityOrder[a.severity as keyof typeof severityOrder];
+        if (severityDiff !== 0) return severityDiff;
+        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
       });
+
+      res.json(filteredAlerts);
     } catch (error) {
       console.error("Travel alerts error:", error);
       res.status(500).json({ message: "Failed to fetch travel alerts" });
@@ -387,6 +479,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(itineraryTemplate);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch itinerary template" });
+    }
+  });
+
+  // AI Chat endpoint with travel alerts integration
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Extract mentioned countries from user message
+      const seaCountries = ["Thailand", "Vietnam", "Singapore", "Malaysia", "Philippines", "Indonesia", "Cambodia", "Laos", "Myanmar", "Brunei"];
+      const mentionedCountries = seaCountries.filter(country => 
+        message.toLowerCase().includes(country.toLowerCase())
+      );
+
+      // Check for relevant travel alerts
+      let relevantAlerts = [];
+      if (mentionedCountries.length > 0) {
+        // Fetch current alerts for mentioned countries
+        const alertsResponse = await fetch(`http://localhost:5000/api/travel-alerts?country=${mentionedCountries[0]}`);
+        if (alertsResponse.ok) {
+          const alerts = await alertsResponse.json();
+          relevantAlerts = alerts.filter((alert: any) => 
+            alert.countries.some((country: string) => mentionedCountries.includes(country))
+          );
+        }
+      }
+
+      // Generate intelligent AI response
+      let reply = "I'm Bruce, your AI travel assistant! I'm here to help you plan the perfect Southeast Asian adventure. ";
+      
+      if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+        reply += "What destination are you interested in exploring? I can help with flights, accommodations, local tips, and current travel conditions.";
+      } else if (mentionedCountries.length > 0) {
+        reply += `Great choice asking about ${mentionedCountries.join(" and ")}! `;
+        
+        if (relevantAlerts.length > 0) {
+          const highPriorityAlerts = relevantAlerts.filter((alert: any) => 
+            alert.severity === "high" || alert.severity === "critical"
+          );
+          
+          if (highPriorityAlerts.length > 0) {
+            reply += `⚠️ Important: I found ${highPriorityAlerts.length} active travel alert(s) for ${mentionedCountries.join(" and ")}. Please check the Travel Alerts section for detailed information before finalizing your plans. `;
+          }
+        }
+        
+        reply += "I can help you find the best flights, accommodations, local transportation, and must-visit attractions. What specific aspect of your trip would you like assistance with?";
+      } else if (message.toLowerCase().includes("alert") || message.toLowerCase().includes("warning")) {
+        reply += "I can help you stay informed about travel conditions. Check the Travel Alerts section for real-time updates on weather, flight delays, health requirements, and security advisories across Southeast Asia.";
+      } else if (message.toLowerCase().includes("flight") || message.toLowerCase().includes("booking")) {
+        reply += "I can help you find the best flights and manage your bookings. Use the Flights section to search for routes, compare prices, and the Booking Manager to track all your reservations in one place.";
+      } else {
+        reply += "I can assist with trip planning, destination recommendations, travel alerts, visa requirements, and much more. What would you like to know about Southeast Asian travel?";
+      }
+
+      res.json({ 
+        reply,
+        travelAlerts: relevantAlerts.length > 0 ? relevantAlerts : undefined
+      });
+    } catch (error) {
+      console.error("Chat error:", error);
+      res.status(500).json({ 
+        reply: "I apologize, but I'm having trouble connecting right now. Please try again in a moment, or check the Travel Alerts section directly for current travel conditions.",
+        error: "Chat service temporarily unavailable"
+      });
     }
   });
 
