@@ -13,6 +13,10 @@ import MyTrips from "./pages/MyTrips";
 import MoneyManagement from "./pages/MoneyManagement";
 import Visas from "./pages/Visas";
 import GoogleTranslate from "./pages/GoogleTranslate";
+import TravelPlanner from "./pages/TravelPlanner";
+import TravelBuddy from "./pages/TravelBuddy";
+import BookingManager from "./pages/BookingManager";
+import TravelDocuments from "./pages/TravelDocuments";
 
 function Router() {
   return (
@@ -24,6 +28,10 @@ function Router() {
       <Route path="/money-management" component={MoneyManagement} />
       <Route path="/visas" component={Visas} />
       <Route path="/google-translate" component={GoogleTranslate} />
+      <Route path="/travel-planner" component={TravelPlanner} />
+      <Route path="/travel-buddy" component={TravelBuddy} />
+      <Route path="/booking-manager" component={BookingManager} />
+      <Route path="/travel-documents" component={TravelDocuments} />
       <Route path="/my-trips" component={MyTrips} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
