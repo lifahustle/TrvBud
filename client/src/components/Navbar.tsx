@@ -76,16 +76,95 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <button type="button" className="p-1 rounded-full text-neutral-300 hover:text-neutral-400 focus:outline-none">
-              <Bell className="h-5 w-5" />
-            </button>
-            <div className="ml-3 relative">
-              <div>
-                <button type="button" className="flex text-sm rounded-full focus:outline-none" id="user-menu-button">
-                  <User className="h-6 w-6 text-neutral-400 bg-neutral-100 rounded-full p-1" />
+            {userProfile ? (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/membership" className="mr-2">
+                    <Badge 
+                      variant="secondary" 
+                      className={`bg-gradient-to-r ${getMembershipColor(userProfile.membershipTier || 'explorer')} text-white`}
+                    >
+                      {(() => {
+                        const IconComponent = getMembershipIcon(userProfile.membershipTier || 'explorer');
+                        return <IconComponent className="w-3 h-3 mr-1" />;
+                      })()}
+                      {(userProfile.membershipTier || 'explorer').charAt(0).toUpperCase() + (userProfile.membershipTier || 'explorer').slice(1)}
+                    </Badge>
+                  </Link>
+                </Button>
+                <button 
+                  type="button" 
+                  className="p-1 rounded-full text-neutral-400 hover:text-neutral-300 focus:outline-none mr-3"
+                >
+                  <Bell className="h-5 w-5" />
                 </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={userProfile.profileImage || ''} alt={userProfile.username || ''} />
+                        <AvatarFallback>
+                          {(userProfile.firstName || 'U')[0]}{(userProfile.lastName || 'U')[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <div className="flex items-center justify-start gap-2 p-2">
+                      <div className="flex flex-col space-y-1 leading-none">
+                        <p className="font-medium">{userProfile.firstName} {userProfile.lastName}</p>
+                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                          {userProfile.email}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {userProfile.pointsBalance || 0} points
+                        </p>
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile" className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/membership" className="cursor-pointer">
+                        <Crown className="mr-2 h-4 w-4" />
+                        Membership
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/booking-manager" className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        My Bookings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => {
+                        fetch('/api/auth/logout', { method: 'POST' }).then(() => {
+                          window.location.href = '/';
+                        });
+                      }}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/register">Join TrvBUD</Link>
+                </Button>
               </div>
-            </div>
+            )}
           </div>
           <div className="flex items-center sm:hidden">
             <button 
