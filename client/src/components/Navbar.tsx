@@ -63,21 +63,7 @@ const Navbar = () => {
               <span className="ml-2 text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-poppins">Trv Bud</span>
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.path} 
-                  href={link.path}
-                  className={`${
-                    location === link.path
-                      ? "border-primary text-primary"
-                      : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
-                  } border-b-2 px-1 pt-1 text-sm font-medium nav-link`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-              
-              {/* Let's Go Dropdown */}
+              {/* Let's Go Dropdown - First Item */}
               <DropdownMenu>
                 <DropdownMenuTrigger className={`${
                   exploreMenuItems.some(item => location === item.path)
@@ -101,6 +87,20 @@ const Navbar = () => {
                   })}
                 </DropdownMenuContent>
               </DropdownMenu>
+              
+              {navLinks.map((link) => (
+                <Link 
+                  key={link.path} 
+                  href={link.path}
+                  className={`${
+                    location === link.path
+                      ? "border-primary text-primary"
+                      : "border-transparent text-neutral-400 hover:text-neutral-300 hover:border-neutral-300"
+                  } border-b-2 px-1 pt-1 text-sm font-medium nav-link`}
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -206,23 +206,8 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="sm:hidden" id="mobile-menu">
           <div className="pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={`${
-                  location === link.path
-                    ? "bg-primary text-white"
-                    : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
-                } block pl-3 pr-4 py-2 text-base font-medium`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-            
-            {/* Let's Go section in mobile */}
-            <div className="border-t border-neutral-200 mt-2 pt-2">
+            {/* Let's Go section in mobile - First */}
+            <div className="border-b border-neutral-200 pb-2 mb-2">
               <div className="px-3 pb-2">
                 <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Let's Go!</p>
               </div>
@@ -245,6 +230,21 @@ const Navbar = () => {
                 );
               })}
             </div>
+            
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`${
+                  location === link.path
+                    ? "bg-primary text-white"
+                    : "text-neutral-400 hover:bg-neutral-100 hover:text-neutral-300"
+                } block pl-3 pr-4 py-2 text-base font-medium`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
         </div>
       )}
