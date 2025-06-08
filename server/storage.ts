@@ -1,7 +1,10 @@
 import { 
   users, 
   type User, 
-  type InsertUser, 
+  type InsertUser,
+  type UserSession,
+  type MembershipBenefit,
+  type PointsHistory,
   type Destination, 
   type Accommodation, 
   type Transport, 
@@ -11,7 +14,8 @@ import {
   type Booking,
   type InsertNewsletterSubscriber,
   type NewsletterSubscriber,
-  FlightClass
+  FlightClass,
+  MembershipTier
 } from "@shared/schema";
 
 // Modify the interface with all CRUD methods needed for our application
@@ -19,7 +23,21 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<User>;
+  verifyPassword(username: string, password: string): Promise<User | null>;
+
+  // Session operations
+  createSession(userId: number): Promise<UserSession>;
+  getSession(sessionId: string): Promise<UserSession | undefined>;
+  deleteSession(sessionId: string): Promise<void>;
+
+  // Membership operations
+  getMembershipBenefits(tier: string): Promise<MembershipBenefit[]>;
+  updateMembershipTier(userId: number, tier: string): Promise<User>;
+  addPoints(userId: number, points: number, action: string, description?: string): Promise<void>;
+  getPointsHistory(userId: number): Promise<PointsHistory[]>;
 
   // Destination operations
   getDestinations(): Promise<Destination[]>;

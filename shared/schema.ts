@@ -2,7 +2,7 @@ import { pgTable, text, serial, integer, boolean, date, jsonb, timestamp, varcha
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users Table
+// Users Table with Membership
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -10,7 +10,20 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   firstName: text("first_name"),
   lastName: text("last_name"),
+  phone: text("phone"),
+  dateOfBirth: date("date_of_birth"),
+  nationality: text("nationality"),
+  profileImage: text("profile_image"),
+  membershipTier: text("membership_tier").notNull().default("explorer"),
+  membershipStartDate: timestamp("membership_start_date").defaultNow(),
+  membershipExpiryDate: timestamp("membership_expiry_date"),
+  pointsBalance: integer("points_balance").default(0),
+  totalTrips: integer("total_trips").default(0),
+  isEmailVerified: boolean("is_email_verified").default(false),
+  isPhoneVerified: boolean("is_phone_verified").default(false),
+  preferences: jsonb("preferences"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -19,10 +32,31 @@ export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   firstName: true,
   lastName: true,
+  phone: true,
+  dateOfBirth: true,
+  nationality: true,
+  profileImage: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Membership Tiers Enum
+export enum MembershipTier {
+  EXPLORER = "explorer",
+  ADVENTURER = "adventurer", 
+  PREMIUM = "premium"
+}
+
+// User Sessions Table
+export const userSessions = pgTable("user_sessions", {
+  id: text("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type UserSession = typeof userSessions.$inferSelect;
 
 // Destinations Table
 export const destinations = pgTable("destinations", {
@@ -250,3 +284,27 @@ export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSub
 
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+
+// Membership Benefits Table
+export const membershipBenefits = pgTable("membership_benefits", {
+  id: serial("id").primaryKey(),
+  tier: text("tier").notNull(),
+  benefitType: text("benefit_type").notNull(),
+  description: text("description").notNull(),
+  value: text("value"),
+  isActive: boolean("is_active").default(true),
+});
+
+export type MembershipBenefit = typeof membershipBenefits.$inferSelect;
+
+// User Points History Table
+export const pointsHistory = pgTable("points_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  points: integer("points").notNull(),
+  action: text("action").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type PointsHistory = typeof pointsHistory.$inferSelect;
