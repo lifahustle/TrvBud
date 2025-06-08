@@ -1,10 +1,166 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertNewsletterSubscriberSchema } from "@shared/schema";
+import { insertNewsletterSubscriberSchema, insertUserSchema } from "@shared/schema";
+import bcrypt from "bcrypt";
+import session from "express-session";
+import MemoryStore from "memorystore";
+
+const MemoryStoreSession = MemoryStore(session);
+
+// Session configuration
+const sessionConfig = session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-key',
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup session middleware
+  app.use(sessionConfig);
+
+  // Authentication middleware
+  const requireAuth = (req: Request, res: Response, next: any) => {
+    if (req.session?.userId) {
+      return next();
+    }
+    res.status(401).json({ message: "Authentication required" });
+  };
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const existingEmail = await storage.getUserByEmail(userData.email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      
+      // Create user with default membership
+      const user = await storage.createUser({
+        ...userData,
+        password: hashedPassword,
+      });
+
+      res.status(201).json({ message: "Account created successfully" });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password required" });
+      }
+
+      const user = await storage.verifyPassword(username, password);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Set session
+      req.session.userId = user.id;
+      res.json({ message: "Login successful" });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logout successful" });
+    });
+  });
+
+  app.get("/api/auth/profile", async (req, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Remove password from response
+      const { password, ...userProfile } = user;
+      res.json(userProfile);
+    } catch (error) {
+      console.error("Profile error:", error);
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+
+  app.patch("/api/auth/profile", requireAuth, async (req, res) => {
+    try {
+      const updates = req.body;
+      const user = await storage.updateUser(req.session.userId, updates);
+      const { password, ...userProfile } = user;
+      res.json(userProfile);
+    } catch (error) {
+      console.error("Profile update error:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Membership routes
+  app.post("/api/membership/upgrade", requireAuth, async (req, res) => {
+    try {
+      const { tier } = req.body;
+      if (!['explorer', 'adventurer', 'premium'].includes(tier)) {
+        return res.status(400).json({ message: "Invalid membership tier" });
+      }
+
+      const user = await storage.updateMembershipTier(req.session.userId, tier);
+      await storage.addPoints(req.session.userId, 100, 'membership_upgrade', 'Membership upgrade bonus');
+      
+      const { password, ...userProfile } = user;
+      res.json(userProfile);
+    } catch (error) {
+      console.error("Membership upgrade error:", error);
+      res.status(500).json({ message: "Failed to upgrade membership" });
+    }
+  });
+
+  app.get("/api/points/history", requireAuth, async (req, res) => {
+    try {
+      const history = await storage.getPointsHistory(req.session.userId);
+      res.json(history);
+    } catch (error) {
+      console.error("Points history error:", error);
+      res.status(500).json({ message: "Failed to fetch points history" });
+    }
+  });
+
   // Destinations API
   app.get("/api/destinations", async (_req, res) => {
     try {
