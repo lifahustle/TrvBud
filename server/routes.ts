@@ -348,6 +348,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Travel alerts endpoint
+  app.get('/api/travel-alerts', async (req, res) => {
+    try {
+      const { country, category, severity } = req.query;
+      
+      // This endpoint requires news API integration
+      // For now, returning error to prompt for API key
+      res.status(503).json({ 
+        message: "Travel alerts service requires news API integration. Please provide news API credentials.",
+        requiresApiKey: true
+      });
+    } catch (error) {
+      console.error("Travel alerts error:", error);
+      res.status(500).json({ message: "Failed to fetch travel alerts" });
+    }
+  });
+
   // Newsletter subscription API
   app.post("/api/newsletter", async (req, res) => {
     try {
