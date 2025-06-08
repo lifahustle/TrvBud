@@ -36,8 +36,9 @@ const Stays = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Accommodations - South Asia Explorer</title>
-        <meta name="description" content="Find and book hotels, resorts, and villas in beautiful South Asian destinations." />
+        <title>Southeast Asia Hotels & Resorts | TrvBUD - 5-Star Deals Thailand Vietnam</title>
+        <meta name="description" content="Book luxury hotels, beach resorts & budget stays in Thailand, Vietnam, Philippines & Cambodia. Exclusive member discounts up to 50% off accommodation." />
+        <meta name="keywords" content="Southeast Asia hotels, Thailand resorts, Vietnam accommodations, Philippines beach hotels, Cambodia guesthouses, luxury stays Asia" />
       </Helmet>
       
       <h1 className="text-3xl font-bold mb-8">Find Your Perfect Stay</h1>

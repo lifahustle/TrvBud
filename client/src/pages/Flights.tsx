@@ -40,8 +40,9 @@ const Flights = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Helmet>
-        <title>Flights - South Asia Explorer</title>
-        <meta name="description" content="Find and book flights to South Asian destinations including Thailand, Vietnam, Cambodia, and more." />
+        <title>Southeast Asia Flights | TrvBUD - Best Deals Thailand Vietnam Philippines</title>
+        <meta name="description" content="Book cheap flights to Thailand, Vietnam, Philippines & Cambodia. Compare airlines, find best deals on domestic and international routes across Southeast Asia." />
+        <meta name="keywords" content="Southeast Asia flights, Thailand flights, Vietnam airlines, Philippines domestic flights, Cambodia travel, cheap airfare Asia" />
       </Helmet>
       
       <h1 className="text-3xl font-bold mb-8">Find Your Flight</h1>
