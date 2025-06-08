@@ -10,10 +10,10 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div className="absolute inset-0 flex flex-col justify-center items-center px-4 text-center">
         <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-poppins max-w-3xl leading-tight mb-6">
-          Explore East Asia's Top Destinations in 2025
+          Discover Southeast Asia's Hidden Gems in 2025
         </h1>
         <p className="text-white text-lg md:text-xl mb-8 max-w-2xl">
-          Discover discounted 5-star accommodations, affordable flights, and exclusive vehicle rentals across East Asia's most breathtaking locations.
+          Experience Thailand's beaches, Vietnam's culture, Philippines' islands, and Cambodia's temples with exclusive deals and AI-powered travel planning.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link href="/flights">

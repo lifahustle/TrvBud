@@ -116,10 +116,21 @@ export default function TravelBuddy() {
     onError: (error) => {
       setIsTyping(false);
       setMessages(prev => prev.filter(msg => !msg.isTyping));
+      
+      // Add fallback response when API is unavailable
+      const fallbackMessage: ChatMessage = {
+        id: Date.now().toString(),
+        content: "I'm currently experiencing connectivity issues, but I can still help! While I work on reconnecting to my advanced features, here are some popular Southeast Asian destinations I recommend:\n\n🇹🇭 Thailand: Bangkok, Phuket, Chiang Mai\n🇻🇳 Vietnam: Ho Chi Minh City, Hanoi, Ha Long Bay\n🇵🇭 Philippines: Manila, Cebu, Palawan\n🇰🇭 Cambodia: Siem Reap, Phnom Penh, Sihanoukville\n\nFeel free to ask about any of these destinations!",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, fallbackMessage]);
+      
       toast({
-        title: "Connection Error",
-        description: "Unable to connect to TrvBUD assistant. Please try again.",
-        variant: "destructive",
+        title: "Limited Connectivity",
+        description: "Bruce is operating in offline mode but can still provide basic travel guidance.",
+        variant: "default",
       });
     },
   });
@@ -198,7 +209,7 @@ export default function TravelBuddy() {
         </div>
 
         {/* Chat Container */}
-        <Card className="h-[600px] flex flex-col">
+        <Card className="h-[70vh] sm:h-[600px] flex flex-col">
           <CardHeader className="border-b">
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">

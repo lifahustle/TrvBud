@@ -13,11 +13,12 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>South Asia Explorer - Your 2025 Travel Adventure</title>
-        <meta name="description" content="Plan your perfect South Asian adventure for 2025 with flights, accommodations, and transportation across Thailand, Vietnam, Cambodia, and more." />
-        <meta property="og:title" content="South Asia Explorer - Your 2025 Travel Adventure" />
-        <meta property="og:description" content="Discover ancient temples, pristine beaches, and vibrant cultures across South Asia's most breathtaking destinations." />
+        <title>TrvBUD - Southeast Asia Travel Platform | AI-Powered Trip Planning 2025</title>
+        <meta name="description" content="Discover Thailand, Vietnam, Philippines & Cambodia with TrvBUD's AI assistant Bruce. Get exclusive deals on flights, hotels & transport with 3-tier membership benefits." />
+        <meta property="og:title" content="TrvBUD - Southeast Asia's Premier Travel Platform" />
+        <meta property="og:description" content="AI-powered travel planning for Thailand, Vietnam, Philippines & Cambodia. Exclusive member deals, Bruce AI assistant, and comprehensive trip management." />
         <meta property="og:type" content="website" />
+        <meta name="keywords" content="Southeast Asia travel, Thailand tours, Vietnam trips, Philippines islands, Cambodia temples, AI travel assistant, flight deals, hotel bookings" />
       </Helmet>
       <Hero />
       <SearchSection />
