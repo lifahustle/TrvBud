@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Menu, Bell, User, Plane, Crown, Star, DollarSign, LogOut, Settings, ChevronDown, Car, Calendar, FileText, Wallet } from "lucide-react";
-import passportIcon from "@assets/passport_1749397143783.png";
+import passportIcon from "@/assets/passport_1749397143783.png";
 
 const Navbar = () => {
   const [location] = useLocation();
@@ -106,7 +106,7 @@ const Navbar = () => {
                   ) : link.name === "Wallet" ? (
                     <Wallet className="w-4 h-4" />
                   ) : link.name === "Visas" ? (
-                    <img src={passportIcon} alt="Passport" className="w-4 h-4" />
+                    <img src={passportIcon} alt="Passport" className="w-4 h-4 object-contain" />
                   ) : (
                     link.name
                   )}
@@ -260,7 +260,7 @@ const Navbar = () => {
                 ) : link.name === "Wallet" ? (
                   <Wallet className="w-4 h-4" />
                 ) : link.name === "Visas" ? (
-                  <img src={passportIcon} alt="Passport" className="w-4 h-4" />
+                  <img src={passportIcon} alt="Passport" className="w-4 h-4 object-contain" />
                 ) : (
                   link.name
                 )}
